@@ -13,10 +13,10 @@ position: 3
 Product catalog with category filters, search, product detail pages. Cart functionality with quantity adjustment. Real-time cart updates.
 
 ## Checklist
-- [ ] Product grid on homepage with category filters
-- [ ] Product detail page with images, description, recycled-from info, add to cart
-- [ ] Cart page with quantity controls, remove items, subtotal
-- [ ] Product search functionality
+- [x] Product grid on homepage with category filters
+- [x] Product detail page with images, description, recycled-from info, add to cart
+- [x] Cart page with quantity controls, remove items, subtotal
+- [x] Product search functionality
 - [ ] Category navigation
 
 ## Acceptance
