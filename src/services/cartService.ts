@@ -10,13 +10,7 @@ export const cartService = {
       .from("cart_items")
       .select(`
         *,
-        products (
-          id,
-          name,
-          price,
-          images,
-          stock
-        )
+        products (*)
       `)
       .eq("user_id", userId);
 
@@ -97,6 +91,13 @@ export const cartService = {
 
   async getCartTotal(userId: string) {
     const items = await this.getCartItems(userId);
+    return items.reduce((total, item) => {
+      const price = item.products?.price || 0;
+      return total + (price * item.quantity);
+    }, 0);
+  },
+
+  calculateTotal(items: any[]) {
     return items.reduce((total, item) => {
       const price = item.products?.price || 0;
       return total + (price * item.quantity);

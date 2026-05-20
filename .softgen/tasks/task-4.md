@@ -1,6 +1,6 @@
 ---
 title: User checkout & payments
-status: todo
+status: in_progress
 priority: high
 type: feature
 tags: [frontend, payments, stripe]
@@ -13,11 +13,11 @@ position: 4
 Stripe checkout integration. Address selection/creation during checkout. Order confirmation. Payment keys from Supabase environment.
 
 ## Checklist
-- [ ] Stripe Elements integration for card input
-- [ ] Checkout page with cart summary, address selection
-- [ ] Address form (new address during checkout)
-- [ ] Payment processing via Stripe API
-- [ ] Order confirmation page
+- [x] Stripe Elements integration for card input
+- [x] Checkout page with cart summary, address selection
+- [x] Address form (new address during checkout)
+- [x] Payment processing via Stripe API
+- [x] Order confirmation page
 - [ ] Email confirmation (Supabase email templates)
 
 ## Acceptance
