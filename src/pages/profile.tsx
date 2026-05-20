@@ -110,7 +110,7 @@ export default function ProfilePage() {
       const session = await authService.getCurrentSession();
       if (!session) return;
 
-      const address = await addressService.createAddress(session.user.id, {
+      const address = await addressService.createAddress({
         user_id: session.user.id,
         ...newAddress,
         is_default: addresses.length === 0,
@@ -147,7 +147,9 @@ export default function ProfilePage() {
 
   async function handleSetDefaultAddress(addressId: string) {
     try {
-      await addressService.setDefaultAddress(addressId);
+      const session = await authService.getCurrentSession();
+      if (!session) return;
+      await addressService.setDefaultAddress(session.user.id, addressId);
       await loadProfileData();
     } catch (error) {
       console.error("Error setting default:", error);
