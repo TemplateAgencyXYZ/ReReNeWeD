@@ -28,6 +28,54 @@ export const productService = {
     return data || [];
   },
 
+  async getFeaturedProducts() {
+    const { data, error } = await supabase
+      .from("products")
+      .select(`
+        *,
+        categories (
+          id,
+          name,
+          slug
+        )
+      `)
+      .eq("is_active", true)
+      .eq("is_featured", true)
+      .order("created_at", { ascending: false })
+      .limit(8);
+
+    if (error) {
+      console.error("Error fetching featured products:", error);
+      throw error;
+    }
+
+    return data || [];
+  },
+
+  async getNewArrivals() {
+    const { data, error } = await supabase
+      .from("products")
+      .select(`
+        *,
+        categories (
+          id,
+          name,
+          slug
+        )
+      `)
+      .eq("is_active", true)
+      .eq("is_new_arrival", true)
+      .order("created_at", { ascending: false })
+      .limit(8);
+
+    if (error) {
+      console.error("Error fetching new arrivals:", error);
+      throw error;
+    }
+
+    return data || [];
+  },
+
   async getProductById(id: string) {
     const { data, error } = await supabase
       .from("products")
