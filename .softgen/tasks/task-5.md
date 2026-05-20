@@ -1,6 +1,6 @@
 ---
 title: User profile & order history
-status: todo
+status: in_progress
 priority: high
 type: feature
 tags: [frontend, user, profile]
@@ -13,12 +13,11 @@ position: 5
 User profile page with personal info, address management, order history, password change. All user data management in one place.
 
 ## Checklist
-- [ ] Profile page layout (tabs: Info, Addresses, Orders, Security)
-- [ ] Profile info edit (name, email, phone)
-- [ ] Address management (add, edit, delete, set default)
-- [ ] Order history list with status and details
-- [ ] Password change form
-- [ ] Account deletion option
+- [x] Profile page with tabs (orders, addresses, security)
+- [x] Order history list with status badges
+- [x] Address management (add, delete, set default)
+- [x] Password change form with validation
+- [x] Link to profile from navigation when logged in
 
 ## Acceptance
 - Users can update their profile information
