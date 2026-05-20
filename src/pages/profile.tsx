@@ -110,7 +110,7 @@ export default function ProfilePage() {
       const session = await authService.getCurrentSession();
       if (!session) return;
 
-      const address = await addressService.createAddress({
+      const address = await addressService.createAddress(session.user.id, {
         user_id: session.user.id,
         ...newAddress,
         is_default: addresses.length === 0,

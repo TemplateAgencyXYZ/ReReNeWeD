@@ -30,7 +30,7 @@ export default function AdminProducts() {
     name: "",
     description: "",
     price: "",
-    stock_quantity: "",
+    stock: "",
     category_id: "",
     recycled_from: "",
     images: [] as string[],
@@ -91,15 +91,18 @@ export default function AdminProducts() {
       let imageUrls = formData.images;
 
       if (imageFile) {
-        const uploadedUrl = await productService.uploadProductImage(imageFile);
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const uploadedUrl = await productService.uploadProductImage(imageFile, fileName);
         imageUrls = [uploadedUrl, ...imageUrls];
       }
 
       const productData = {
         name: formData.name,
+        slug: formData.name.toLowerCase().replace(/[\s_]+/g, '-').replace(/[^\w-]+/g, ''),
         description: formData.description,
         price: parseFloat(formData.price),
-        stock_quantity: parseInt(formData.stock_quantity) || 0,
+        stock: parseInt(formData.stock) || 0,
         category_id: formData.category_id,
         recycled_from: formData.recycled_from,
         images: imageUrls,
@@ -145,7 +148,7 @@ export default function AdminProducts() {
       name: "",
       description: "",
       price: "",
-      stock_quantity: "",
+      stock: "",
       category_id: "",
       recycled_from: "",
       images: [],
@@ -163,7 +166,7 @@ export default function AdminProducts() {
       name: product.name,
       description: product.description || "",
       price: product.price.toString(),
-      stock_quantity: product.stock_quantity.toString(),
+      stock: product.stock?.toString() || "0",
       category_id: product.category_id || "",
       recycled_from: product.recycled_from || "",
       images: product.images || [],
@@ -246,8 +249,8 @@ export default function AdminProducts() {
                     <Input
                       id="stock"
                       type="number"
-                      value={formData.stock_quantity}
-                      onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
+                      value={formData.stock}
+                      onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                     />
                   </div>
 
@@ -363,7 +366,7 @@ export default function AdminProducts() {
                 <CardContent className="p-4 space-y-2">
                   <h3 className="font-semibold">{product.name}</h3>
                   <p className="text-2xl font-bold text-primary">${product.price.toFixed(2)}</p>
-                  <p className="text-sm text-muted-foreground">Stock: {product.stock_quantity}</p>
+                  <p className="text-sm text-muted-foreground">Stock: {product.stock}</p>
                   {product.recycled_from && (
                     <p className="text-sm text-muted-foreground">From: {product.recycled_from}</p>
                   )}

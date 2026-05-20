@@ -205,9 +205,9 @@ export default function HomePage() {
                             className="object-cover w-full h-full"
                           />
                         )}
-                        {product.stock_quantity < 5 && product.stock_quantity > 0 && (
+                        {product.stock !== null && product.stock < 5 && product.stock > 0 && (
                           <Badge className="absolute top-2 right-2 bg-destructive">
-                            Only {product.stock_quantity} left
+                            Only {product.stock} left
                           </Badge>
                         )}
                       </div>
