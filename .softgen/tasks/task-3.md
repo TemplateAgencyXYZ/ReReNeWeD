@@ -1,6 +1,6 @@
 ---
 title: User product browsing & cart
-status: in_progress
+status: done
 priority: high
 type: feature
 tags: [frontend, user]
