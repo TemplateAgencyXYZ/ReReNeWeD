@@ -15,5 +15,5 @@ The admin needs the ability to control what shows up on the homepage ("Featured"
 ## Checklist
 - [x] Execute SQL to add `is_featured` and `is_new_arrival` boolean columns to `products` table (default false)
 - [x] Update `database.types.ts` and `productService.ts` to include these new fields
-- [ ] Add toggle switches for "Featured" and "New Arrival" in the Admin Product create/edit form (`src/pages/admin/products.tsx`)
-- [ ] Update `src/pages/index.tsx` (homepage) to fetch and display products based on these flags instead of latest/random
+- [x] Add toggle switches for "Featured" and "New Arrival" in the Admin Product create/edit form (`src/pages/admin/products.tsx`)
+- [x] Update `src/pages/index.tsx` (homepage) to fetch and display products based on these flags instead of latest/random

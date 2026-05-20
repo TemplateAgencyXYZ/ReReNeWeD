@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { authService } from "@/services/authService";
@@ -33,6 +34,8 @@ export default function AdminProducts() {
     category_id: "",
     recycled_from: "",
     images: [] as string[],
+    is_featured: false,
+    is_new_arrival: false,
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -100,6 +103,8 @@ export default function AdminProducts() {
         category_id: formData.category_id,
         recycled_from: formData.recycled_from,
         images: imageUrls,
+        is_featured: formData.is_featured,
+        is_new_arrival: formData.is_new_arrival,
       };
 
       if (editingProduct) {
@@ -144,6 +149,8 @@ export default function AdminProducts() {
       category_id: "",
       recycled_from: "",
       images: [],
+      is_featured: false,
+      is_new_arrival: false,
     });
     setImageFile(null);
     setEditingProduct(null);
@@ -160,6 +167,8 @@ export default function AdminProducts() {
       category_id: product.category_id || "",
       recycled_from: product.recycled_from || "",
       images: product.images || [],
+      is_featured: product.is_featured || false,
+      is_new_arrival: product.is_new_arrival || false,
     });
     setShowForm(true);
   }
@@ -268,6 +277,34 @@ export default function AdminProducts() {
                       value={formData.recycled_from}
                       onChange={(e) => setFormData({ ...formData, recycled_from: e.target.value })}
                       placeholder="e.g., Ocean plastic, Used wood"
+                    />
+                  </div>
+
+                  <div className="col-span-2 flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="featured">Featured Product</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Display this product in the Featured section on homepage
+                      </p>
+                    </div>
+                    <Switch
+                      id="featured"
+                      checked={formData.is_featured}
+                      onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
+                    />
+                  </div>
+
+                  <div className="col-span-2 flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="new-arrival">New Arrival</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Display this product in the New Arrivals section on homepage
+                      </p>
+                    </div>
+                    <Switch
+                      id="new-arrival"
+                      checked={formData.is_new_arrival}
+                      onCheckedChange={(checked) => setFormData({ ...formData, is_new_arrival: checked })}
                     />
                   </div>
 

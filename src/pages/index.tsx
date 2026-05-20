@@ -15,16 +15,21 @@ type Product = Database["public"]["Tables"]["products"]["Row"] & {
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadFeaturedProducts();
+    loadProducts();
   }, []);
 
-  async function loadFeaturedProducts() {
+  async function loadProducts() {
     try {
-      const products = await productService.getAllProducts();
-      setFeaturedProducts(products.slice(0, 6));
+      const [featured, newProducts] = await Promise.all([
+        productService.getFeaturedProducts(),
+        productService.getNewArrivals(),
+      ]);
+      setFeaturedProducts(featured);
+      setNewArrivals(newProducts);
     } catch (error) {
       console.error("Error loading products:", error);
     } finally {
@@ -55,7 +60,7 @@ export default function HomePage() {
                   <Link href="/products">Shop All Products</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-base">
-                  <Link href="/about">Our Story</Link>
+                  <Link href="/story">Our Story</Link>
                 </Button>
               </div>
             </div>
@@ -92,7 +97,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="font-semibold text-lg">Fast Shipping</h3>
                 <p className="text-sm text-muted-foreground">
-                  Free shipping on orders over $50 within the continental US
+                  Free shipping on orders over ₹500 across India
                 </p>
               </div>
 
@@ -108,6 +113,60 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* New Arrivals */}
+        {newArrivals.length > 0 && (
+          <section className="py-16 md:py-24 bg-muted/20">
+            <div className="container">
+              <div className="text-center space-y-4 mb-12">
+                <Badge variant="secondary" className="mb-2">Just In</Badge>
+                <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
+                  New Arrivals
+                </h2>
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                  Fresh additions to our sustainable collection
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {newArrivals.map((product) => (
+                  <Link key={product.id} href={`/products/${product.id}`}>
+                    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                      <div className="aspect-square bg-muted relative">
+                        {product.images && product.images.length > 0 && (
+                          <img
+                            src={product.images[0]}
+                            alt={product.name}
+                            className="object-cover w-full h-full"
+                          />
+                        )}
+                        <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground">
+                          New
+                        </Badge>
+                      </div>
+                      <CardContent className="p-4">
+                        <div className="space-y-2">
+                          {product.categories && (
+                            <Badge variant="secondary" className="text-xs">
+                              {product.categories.name}
+                            </Badge>
+                          )}
+                          <h3 className="font-semibold text-lg line-clamp-1">{product.name}</h3>
+                          <div className="flex items-center justify-between pt-2">
+                            <span className="text-xl font-bold text-primary">
+                              ₹{product.price.toFixed(2)}
+                            </span>
+                            <Button size="sm">View</Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Featured Products */}
         <section className="py-16 md:py-24">
@@ -146,9 +205,9 @@ export default function HomePage() {
                             className="object-cover w-full h-full"
                           />
                         )}
-                        {product.stock < 5 && product.stock > 0 && (
+                        {product.stock_quantity < 5 && product.stock_quantity > 0 && (
                           <Badge className="absolute top-2 right-2 bg-destructive">
-                            Only {product.stock} left
+                            Only {product.stock_quantity} left
                           </Badge>
                         )}
                       </div>
@@ -165,7 +224,7 @@ export default function HomePage() {
                           </p>
                           <div className="flex items-center justify-between pt-2">
                             <span className="text-2xl font-bold text-primary">
-                              ${product.price.toFixed(2)}
+                              ₹{product.price.toFixed(2)}
                             </span>
                             <Button size="sm">View Details</Button>
                           </div>
@@ -177,7 +236,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">No products available yet. Check back soon!</p>
+                <p className="text-muted-foreground">No featured products yet. Check back soon!</p>
               </div>
             )}
 
