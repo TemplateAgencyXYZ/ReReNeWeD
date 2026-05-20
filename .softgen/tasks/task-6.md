@@ -1,6 +1,6 @@
 ---
 title: Admin product management
-status: in_progress
+status: done
 priority: high
 type: feature
 tags: [admin, backend]
@@ -13,11 +13,11 @@ position: 6
 Admin dashboard for complete product control: CRUD operations, image upload to Supabase Storage, stock management, category assignment.
 
 ## Checklist
-- [ ] Admin dashboard layout with navigation
-- [ ] Product list table with search, filters, actions
-- [ ] Product create/edit form (all fields, multi-image upload)
-- [ ] Image upload to Supabase Storage
-- [ ] Product deletion with confirmation
+- [x] Admin dashboard layout with navigation
+- [x] Product list table with search, filters, actions
+- [x] Product create/edit form (all fields, multi-image upload)
+- [x] Image upload to Supabase Storage
+- [x] Product deletion with confirmation
 - [ ] Category management (create, edit, delete)
 - [ ] Stock level updates
 - [ ] Bulk actions (delete, category change)
