@@ -1,6 +1,6 @@
 ---
 title: Design system & navigation
-status: todo
+status: in_progress
 priority: urgent
 type: feature
 tags: [frontend, design]
