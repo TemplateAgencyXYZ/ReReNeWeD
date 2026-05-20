@@ -13,10 +13,11 @@ position: 2
 Theme shadcn with botanical-renewal colors. Set up fonts (Newsreader + IBM Plex Sans). Create shared navigation header with cart indicator, user menu. Footer with shop info.
 
 ## Checklist
-- [ ] Update globals.css with forest green primary, sage accent, custom tokens
-- [ ] Configure fonts in tailwind.config.ts
-- [ ] Create Navigation component with cart badge
-- [ ] Create Footer component
+- [x] Update globals.css with forest green primary, sage accent, custom tokens
+- [x] Configure fonts in tailwind.config.ts
+- [x] Create Navigation component with cart badge
+- [x] Create Footer component
+- [x] Create cart and product service modules
 - [ ] Theme Button, Badge, Card components with botanical variants
 
 ## Acceptance
