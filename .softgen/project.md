@@ -7,11 +7,11 @@ A full-featured e-commerce platform for recycled/upcycled goods with dual interf
 Botanical-renewal aesthetic — clean optimism with natural growth signals.
 
 **Colors:**
-- `--primary: 160 67% 18%` (deep forest green #0F4C3A)
-- `--accent: 117 18% 58%` (sage green #8BA888)
-- `--muted: 117 15% 92%` (pale sage tint)
+- `--primary: 162 67% 18%` (deep forest green #0F4C3A)
+- `--accent: 114 16% 60%` (sage green #8BA888)
+- `--muted: 114 15% 92%` (pale sage tint)
 - `--background: 0 0% 100%` (clean white)
-- `--foreground: 180 10% 18%` (deep charcoal #2C3333)
+- `--foreground: 180 7% 19%` (deep charcoal #2C3333)
 
 **Typography:**
 - Display: Newsreader (elegant serif for products)

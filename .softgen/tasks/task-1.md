@@ -14,16 +14,16 @@ Complete backend foundation: database tables for products, orders, cart, address
 
 ## Checklist
 - [x] Convert design colors to HSL via terminal
-- [ ] Set up profiles table with is_admin role
-- [ ] Create products table (name, description, price, images array, stock, category, recycled_from)
-- [ ] Create categories table
-- [ ] Create cart_items table (user → product relationship)
-- [ ] Create addresses table (shipping/billing)
-- [ ] Create orders table (with status tracking)
-- [ ] Create order_items table (order line items)
-- [ ] Apply RLS policies (admin overrides, user owns their data)
-- [ ] Set up auth trigger for profile creation
-- [ ] Create admin check function for policies
+- [x] Set up profiles table with is_admin role
+- [x] Create products table (name, description, price, images array, stock, category, recycled_from)
+- [x] Create categories table
+- [x] Create cart_items table (user → product relationship)
+- [x] Create addresses table (shipping/billing)
+- [x] Create orders table (with status tracking)
+- [x] Create order_items table (order line items)
+- [x] Apply RLS policies (admin overrides, user owns their data)
+- [x] Set up auth trigger for profile creation
+- [x] Create admin check function for policies
 
 ## Acceptance
 - Users can sign up and profiles are auto-created
