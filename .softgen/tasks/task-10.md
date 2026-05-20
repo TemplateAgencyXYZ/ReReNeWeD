@@ -1,6 +1,6 @@
 ---
 title: Dynamic homepage controls
-status: in_progress
+status: done
 priority: medium
 type: feature
 tags: [admin, frontend, database]
