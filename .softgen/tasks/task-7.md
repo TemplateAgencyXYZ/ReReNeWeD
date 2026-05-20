@@ -1,6 +1,6 @@
 ---
 title: Admin user & order management
-status: in_progress
+status: done
 priority: medium
 type: feature
 tags: [admin, backend]
