@@ -20,6 +20,6 @@ Botanical-renewal aesthetic — clean optimism with natural growth signals.
 **Style:** Clean editorial, generous spacing, natural warmth, optimistic forward-looking rather than rustic nostalgia.
 
 ## Features
-**User Flow:** Browse products → Add to cart → Checkout with Stripe → Profile management → Order history → Address management
-**Admin Flow:** Product CRUD → User management → Order oversight → Content updates (images, text, pricing)
-**Core:** Supabase auth, database, Stripe payments
+**User Flow:** Browse products → Add to cart → Checkout with Razorpay → Profile management → Order history → Address management
+**Admin Flow:** Product CRUD → User management → Order oversight → Content updates (images, text, pricing, featured status)
+**Core:** Supabase auth, database, Razorpay payments
