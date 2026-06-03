@@ -1,6 +1,6 @@
 ---
 title: Product Image Uploads via Supabase Storage
-status: in_progress
+status: done
 priority: high
 type: feature
 tags: [admin, storage, images]
