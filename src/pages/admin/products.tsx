@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { authService } from "@/services/authService";
@@ -37,7 +38,6 @@ export default function AdminProducts() {
     is_featured: false,
     is_new_arrival: false,
   });
-  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     checkAdminAndLoad();
@@ -88,15 +88,6 @@ export default function AdminProducts() {
     }
 
     try {
-      let imageUrls = formData.images;
-
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const uploadedUrl = await productService.uploadProductImage(imageFile, fileName);
-        imageUrls = [uploadedUrl, ...imageUrls];
-      }
-
       const productData = {
         name: formData.name,
         slug: formData.name.toLowerCase().replace(/[\s_]+/g, '-').replace(/[^\w-]+/g, ''),
@@ -105,7 +96,7 @@ export default function AdminProducts() {
         stock: parseInt(formData.stock) || 0,
         category_id: formData.category_id,
         recycled_from: formData.recycled_from,
-        images: imageUrls,
+        images: formData.images,
         is_featured: formData.is_featured,
         is_new_arrival: formData.is_new_arrival,
       };
@@ -155,7 +146,6 @@ export default function AdminProducts() {
       is_featured: false,
       is_new_arrival: false,
     });
-    setImageFile(null);
     setEditingProduct(null);
     setShowForm(false);
   }
@@ -283,6 +273,15 @@ export default function AdminProducts() {
                     />
                   </div>
 
+                  <div className="col-span-2">
+                    <Label>Product Images</Label>
+                    <ImageUploader
+                      images={formData.images}
+                      onImagesChange={(images) => setFormData({ ...formData, images })}
+                      productId={editingProduct?.id}
+                    />
+                  </div>
+
                   <div className="col-span-2 flex items-center justify-between p-4 border rounded-lg">
                     <div className="space-y-0.5">
                       <Label htmlFor="featured">Featured Product</Label>
@@ -310,27 +309,6 @@ export default function AdminProducts() {
                       onCheckedChange={(checked) => setFormData({ ...formData, is_new_arrival: checked })}
                     />
                   </div>
-
-                  <div className="col-span-2">
-                    <Label htmlFor="image">Product Image</Label>
-                    <Input
-                      id="image"
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                    />
-                  </div>
-
-                  {formData.images.length > 0 && (
-                    <div className="col-span-2">
-                      <p className="text-sm text-muted-foreground mb-2">Current images:</p>
-                      <div className="flex gap-2">
-                        {formData.images.map((url, idx) => (
-                          <img key={idx} src={url} alt="Product" className="w-20 h-20 object-cover rounded" />
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 <div className="flex gap-2">

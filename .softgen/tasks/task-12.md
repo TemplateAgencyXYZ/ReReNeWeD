@@ -13,9 +13,9 @@ position: 12
 The `product-images` public storage bucket is created. We need to implement the frontend upload interface in the Admin Dashboard and link the uploaded URLs to the `products` table.
 
 ## Checklist
-- [ ] Create a UI component (`ImageUploader`) for uploading images using the Supabase Storage SDK
-- [ ] Update the Admin Products form (`src/pages/admin/products.tsx`) to integrate the image upload component
-- [ ] On upload success, retrieve the public URL from the `product-images` bucket
-- [ ] Save the public URLs into the `images` array column when creating or updating a product
-- [ ] Display thumbnail previews of the uploaded images in the Admin Products form
-- [ ] Ensure the frontend product pages (`src/pages/products/[id].tsx`) safely render these Supabase Storage URLs
+- [x] Create a UI component (`ImageUploader`) for uploading images using the Supabase Storage SDK
+- [x] Update the Admin Products form (`src/pages/admin/products.tsx`) to integrate the image upload component
+- [x] On upload success, retrieve the public URL from the `product-images` bucket
+- [x] Save the public URLs into the `images` array column when creating or updating a product
+- [x] Display thumbnail previews of the uploaded images in the Admin Products form
+- [x] Ensure the frontend product pages (`src/pages/products/[id].tsx`) safely render these Supabase Storage URLs
