@@ -54,7 +54,7 @@ export function Navigation() {
       .from("profiles")
       .select("is_admin")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
     
     if (data) setProfile(data);
   }
