@@ -24,7 +24,7 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -35,6 +35,15 @@ export default function RegisterPage() {
       });
 
       if (signUpError) throw signUpError;
+
+      if (data.user) {
+        await supabase.from("profiles").insert({
+          id: data.user.id,
+          email: data.user.email,
+          full_name: fullName,
+          is_admin: false,
+        });
+      }
 
       setSuccess(true);
       setTimeout(() => {

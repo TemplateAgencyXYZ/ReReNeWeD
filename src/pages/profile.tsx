@@ -62,7 +62,7 @@ export default function ProfilePage() {
         .from("profiles")
         .select("*")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
 
       const [userOrders, userAddresses] = await Promise.all([
         orderService.getUserOrders(session.user.id),
