@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Package } from "lucide-react";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -8,7 +9,13 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
-              <Package className="h-6 w-6 text-primary" />
+              <Image
+                src="/Human_Value_AI_6_9s_Clip.png"
+                alt="ReReNeWeD logo"
+                width={44}
+                height={44}
+                className="h-11 w-11 object-contain"
+              />
               <span className="font-serif text-xl font-bold text-primary">ReNewed</span>
             </Link>
             <p className="text-sm text-muted-foreground">

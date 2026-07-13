@@ -81,7 +81,7 @@ export function Navigation() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center space-x-2">
             <Package className="h-6 w-6 text-primary" />
-            <span className="font-serif text-xl font-bold text-primary">ReNewed</span>
+            <span className="font-serif text-xl font-bold text-primary">ReReNeWeD</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">

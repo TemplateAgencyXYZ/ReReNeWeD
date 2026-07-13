@@ -18,7 +18,8 @@ export function SEOElements({
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/Human_Value_AI_6_9s_Clip.png" type="image/png" />
+      <link rel="apple-touch-icon" href="/Human_Value_AI_6_9s_Clip.png" />
 
       {/* Open Graph */}
       <meta property="og:title" content={title} />
@@ -48,7 +49,8 @@ export function SEO({
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/Human_Value_AI_6_9s_Clip.png" type="image/png" />
+      <link rel="apple-touch-icon" href="/Human_Value_AI_6_9s_Clip.png" />
 
       {/* Open Graph */}
       <meta property="og:title" content={title} />
