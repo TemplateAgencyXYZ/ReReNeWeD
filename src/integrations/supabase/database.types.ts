@@ -71,6 +71,47 @@ export type Database = {
           },
         ]
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string | null
+          id: string
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string | null
+          table_name: string
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string | null
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string | null
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_log_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cart_items: {
         Row: {
           created_at: string | null
@@ -191,9 +232,10 @@ export type Database = {
           created_at: string | null
           id: string
           notes: string | null
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
           shipping_address_id: string | null
           status: string
-          stripe_payment_intent_id: string | null
           total_amount: number
           updated_at: string | null
           user_id: string
@@ -203,9 +245,10 @@ export type Database = {
           created_at?: string | null
           id?: string
           notes?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           shipping_address_id?: string | null
           status?: string
-          stripe_payment_intent_id?: string | null
           total_amount: number
           updated_at?: string | null
           user_id: string
@@ -215,9 +258,10 @@ export type Database = {
           created_at?: string | null
           id?: string
           notes?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           shipping_address_id?: string | null
           status?: string
-          stripe_payment_intent_id?: string | null
           total_amount?: number
           updated_at?: string | null
           user_id?: string
@@ -256,10 +300,12 @@ export type Database = {
           is_active: boolean | null
           is_featured: boolean | null
           is_new_arrival: boolean | null
+          is_recycled: boolean | null
           name: string
           price: number
           recycled_from: string | null
           slug: string
+          special_feature: string | null
           stock: number
           updated_at: string | null
         }
@@ -272,10 +318,12 @@ export type Database = {
           is_active?: boolean | null
           is_featured?: boolean | null
           is_new_arrival?: boolean | null
+          is_recycled?: boolean | null
           name: string
           price: number
           recycled_from?: string | null
           slug: string
+          special_feature?: string | null
           stock?: number
           updated_at?: string | null
         }
@@ -288,10 +336,12 @@ export type Database = {
           is_active?: boolean | null
           is_featured?: boolean | null
           is_new_arrival?: boolean | null
+          is_recycled?: boolean | null
           name?: string
           price?: number
           recycled_from?: string | null
           slug?: string
+          special_feature?: string | null
           stock?: number
           updated_at?: string | null
         }
@@ -340,34 +390,42 @@ export type Database = {
       }
       site_content: {
         Row: {
-          content_data: Json
+          content_key: string
+          content_value: string
           id: string
-          page_key: string
-          title: string
           updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
-          content_data?: Json
+          content_key: string
+          content_value: string
           id?: string
-          page_key: string
-          title: string
           updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
-          content_data?: Json
+          content_key?: string
+          content_value?: string
           id?: string
-          page_key?: string
-          title?: string
           updated_at?: string | null
+          updated_by?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "site_content_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      is_admin: { Args: { user_id: string }; Returns: boolean }
+      promote_user_to_admin: { Args: { target_email: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

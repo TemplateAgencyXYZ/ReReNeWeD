@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,11 +25,10 @@ export default async function handler(
     return res.status(500).json({ error: "Supabase not configured" });
   }
 
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      get: () => undefined,
-      set: () => {},
-      remove: () => {},
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
     },
   });
 
