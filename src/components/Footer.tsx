@@ -1,8 +1,14 @@
 import Link from "next/link";
 import { Package } from "lucide-react";
 import Image from "next/image";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 export function Footer() {
+  const { contentMap } = useSiteContent(["footer_tagline"], {
+    footer_tagline:
+      "Quality recycled goods for conscious consumers. Every purchase supports sustainable living.",
+  });
+
   return (
     <footer className="border-t border-border bg-muted/30">
       <div className="container py-12">
@@ -19,7 +25,8 @@ export function Footer() {
               <span className="font-serif text-xl font-bold text-primary">ReReNeWeD</span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Quality recycled goods for conscious consumers. Every purchase supports sustainable living.
+              {contentMap.footer_tagline ||
+                "Quality recycled goods for conscious consumers. Every purchase supports sustainable living."}
             </p>
           </div>
 
