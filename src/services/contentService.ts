@@ -2,26 +2,36 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface SiteContent {
   id: string;
-  page_key: string;
-  title: string;
-  content_data: any;
+  content_key: string;
+  content_value: string;
   updated_at: string;
+  updated_by: string | null;
 }
 
 export const contentService = {
-  async getContent(pageKey: string): Promise<SiteContent | null> {
+  async getContent(
+    contentKey: string,
+    defaultValue: string = ""
+  ): Promise<{ content_key: string; content_value: string }> {
     try {
       const { data, error } = await supabase
         .from("site_content")
-        .select("*")
-        .eq("page_key", pageKey)
-        .single();
+        .select("content_key, content_value")
+        .eq("content_key", contentKey)
+        .maybeSingle();
 
       if (error) throw error;
-      return data;
+
+      return {
+        content_key: contentKey,
+        content_value: data?.content_value ?? defaultValue,
+      };
     } catch (error) {
-      console.error(`Error fetching content for ${pageKey}:`, error);
-      return null;
+      console.error(`Error fetching content for ${contentKey}:`, error);
+      return {
+        content_key: contentKey,
+        content_value: defaultValue,
+      };
     }
   },
 
@@ -30,7 +40,7 @@ export const contentService = {
       const { data, error } = await supabase
         .from("site_content")
         .select("*")
-        .order("page_key");
+        .order("content_key");
 
       if (error) throw error;
       return data || [];
@@ -41,22 +51,27 @@ export const contentService = {
   },
 
   async updateContent(
-    pageKey: string,
-    contentData: Record<string, any>
+    contentKey: string,
+    contentValue: string
   ): Promise<boolean> {
     try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       const { error } = await supabase
         .from("site_content")
         .update({
-          content_data: contentData,
+          content_value: contentValue,
           updated_at: new Date().toISOString(),
+          updated_by: user?.id || null,
         })
-        .eq("page_key", pageKey);
+        .eq("content_key", contentKey);
 
       if (error) throw error;
       return true;
     } catch (error) {
-      console.error(`Error updating content for ${pageKey}:`, error);
+      console.error(`Error updating content for ${contentKey}:`, error);
       throw error;
     }
   },

@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Package, Users, ShoppingCart, DollarSign } from "lucide-react";
-import { AdminTabs } from "@/components/AdminTabs";
+import { AdminTabs } from "@/components/admin/AdminTabs";
 
 export default function AdminDashboard() {
   const router = useRouter();

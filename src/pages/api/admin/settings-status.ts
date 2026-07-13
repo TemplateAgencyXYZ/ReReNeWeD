@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createClient } from "@/integrations/supabase/client";
+import { createServerClient } from "@supabase/ssr";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,7 +18,21 @@ export default async function handler(
     return res.status(401).json({ error: "Authentication required" });
   }
 
-  const supabase = createClient();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return res.status(500).json({ error: "Supabase not configured" });
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      get: () => undefined,
+      set: () => {},
+      remove: () => {},
+    },
+  });
+
   const {
     data: { user },
     error: authError,
