@@ -9,8 +9,8 @@ interface SEOProps {
 
 // SEO elements that can be used in _document.tsx (returns JSX without Head wrapper)
 export function SEOElements({
-  title = "Hello World",
-  description = "Welcome to my app",
+  title = "ReReNeWeD - Premium Recycled Stationery",
+  description = "Sustainable recycled stationery and eco-conscious goods for everyday living.",
   image = "/og-image.png",
   url,
 }: SEOProps) {
@@ -18,8 +18,8 @@ export function SEOElements({
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <link rel="icon" href="/Human_Value_AI_6_9s_Clip.png" type="image/png" />
-      <link rel="apple-touch-icon" href="/Human_Value_AI_6_9s_Clip.png" />
+      <link rel="icon" href="/Final.png" type="image/png" />
+      <link rel="apple-touch-icon" href="/Final.png" />
 
       {/* Open Graph */}
       <meta property="og:title" content={title} />
@@ -40,8 +40,8 @@ export function SEOElements({
 // SEO component for use in pages/_app.tsx or individual pages (uses next/head)
 // Note: Flattened structure (no fragment) for better Next.js Head compatibility during hot reload
 export function SEO({
-  title = "Hello World",
-  description = "Welcome to my app",
+  title = "ReReNeWeD - Premium Recycled Stationery",
+  description = "Sustainable recycled stationery and eco-conscious goods for everyday living.",
   image = "/og-image.png",
   url,
 }: SEOProps) {
@@ -49,8 +49,8 @@ export function SEO({
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <link rel="icon" href="/Human_Value_AI_6_9s_Clip.png" type="image/png" />
-      <link rel="apple-touch-icon" href="/Human_Value_AI_6_9s_Clip.png" />
+      <link rel="icon" href="/Final.png" type="image/png" />
+      <link rel="apple-touch-icon" href="/Final.png" />
 
       {/* Open Graph */}
       <meta property="og:title" content={title} />

@@ -10,13 +10,13 @@ export function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/Human_Value_AI_6_9s_Clip.png"
+                src="/Final.png"
                 alt="ReReNeWeD logo"
                 width={44}
                 height={44}
                 className="h-11 w-11 object-contain"
               />
-              <span className="font-serif text-xl font-bold text-primary">ReNewed</span>
+              <span className="font-serif text-xl font-bold text-primary">ReReNeWeD</span>
             </Link>
             <p className="text-sm text-muted-foreground">
               Quality recycled goods for conscious consumers. Every purchase supports sustainable living.
@@ -104,7 +104,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-border">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ReNewed. All rights reserved. Built with care for the planet.
+            © {new Date().getFullYear()} ReReNeWeD. All rights reserved. Built with care for the planet.
           </p>
         </div>
       </div>
