@@ -1,4 +1,3 @@
- 
 export type Json =
   | string
   | number
@@ -398,7 +397,7 @@ export type Database = {
         }
         Insert: {
           content_key: string
-          content_value: string
+          content_value?: string
           id?: string
           updated_at?: string | null
           updated_by?: string | null
@@ -410,15 +409,7 @@ export type Database = {
           updated_at?: string | null
           updated_by?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "site_content_updated_by_fkey"
-            columns: ["updated_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {

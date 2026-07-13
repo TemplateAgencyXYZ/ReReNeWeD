@@ -8,10 +8,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ShoppingCart, User, Package, LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { ShoppingCart, User, Package, LogOut, Settings, LayoutDashboard, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
+import Image from "next/image";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { cartService } from "@/services/cartService";
+import { authService } from "@/services/authService";
 
 interface Profile {
   is_admin: boolean;
@@ -80,7 +84,13 @@ export function Navigation() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center space-x-2">
-            <Package className="h-6 w-6 text-primary" />
+            <Image
+              src="/Human_Value_AI_6_9s_Clip.png"
+              alt="ReReNeWeD logo"
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+            />
             <span className="font-serif text-xl font-bold text-primary">ReReNeWeD</span>
           </Link>
 

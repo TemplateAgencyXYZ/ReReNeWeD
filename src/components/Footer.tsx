@@ -16,7 +16,7 @@ export function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/Final.png"
+                src="/Human_Value_AI_6_9s_Clip.png"
                 alt="ReReNeWeD logo"
                 width={44}
                 height={44}
