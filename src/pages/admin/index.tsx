@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Package, Users, ShoppingCart, DollarSign } from "lucide-react";
+import { AdminTabs } from "@/components/AdminTabs";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function AdminDashboard() {
         .from("profiles")
         .select("is_admin")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
 
       if (!profile?.is_admin) {
         router.push("/");
@@ -100,6 +101,8 @@ export default function AdminDashboard() {
             <h1 className="font-serif text-4xl font-bold">Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage your e-commerce platform</p>
           </div>
+
+          <AdminTabs />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card>
