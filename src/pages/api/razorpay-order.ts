@@ -53,22 +53,12 @@ export default async function handler(
       return res.status(401).json({ error: "Invalid session" });
     }
 
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (profileError || !profile?.is_admin) {
-      return res.status(403).json({ error: "Admin access required" });
-    }
-
     if (req.method === "POST") {
-      return handleCreateOrder(req, res, supabase);
+      return handleCreateOrder(req, res, supabase, user.id);
     }
 
     if (req.method === "PATCH") {
-      return handlePaymentFailed(req, res, supabase);
+      return handlePaymentFailed(req, res, supabase, user.id);
     }
 
     return res.status(405).json({ error: "Method not allowed" });
@@ -84,7 +74,8 @@ export default async function handler(
 async function handleCreateOrder(
   req: NextApiRequest,
   res: NextApiResponse,
-  supabase: ReturnType<typeof getSupabase>
+  supabase: ReturnType<typeof getSupabase>,
+  userId: string
 ) {
   if (!keyId || !keySecret) {
     return res
@@ -100,7 +91,7 @@ async function handleCreateOrder(
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
-    .select("id, total_amount, status, user_id, profiles(email, full_name, phone)")
+    .select("id, total_amount, status, user_id")
     .eq("id", localOrderId)
     .single();
 
@@ -109,7 +100,7 @@ async function handleCreateOrder(
     return res.status(404).json({ error: "Order not found" });
   }
 
-  if (order.user_id !== user.id) {
+  if (order.user_id !== userId) {
     return res.status(403).json({ error: "Order does not belong to user" });
   }
 
@@ -168,12 +159,27 @@ async function handleCreateOrder(
 async function handlePaymentFailed(
   req: NextApiRequest,
   res: NextApiResponse,
-  supabase: ReturnType<typeof getSupabase>
+  supabase: ReturnType<typeof getSupabase>,
+  userId: string
 ) {
   const { localOrderId } = req.body;
 
   if (!localOrderId) {
     return res.status(400).json({ error: "Order ID is required" });
+  }
+
+  const { data: order, error: orderError } = await supabase
+    .from("orders")
+    .select("id, user_id")
+    .eq("id", localOrderId)
+    .single();
+
+  if (orderError || !order) {
+    return res.status(404).json({ error: "Order not found" });
+  }
+
+  if (order.user_id !== userId) {
+    return res.status(403).json({ error: "Order does not belong to user" });
   }
 
   const { error: updateError } = await supabase
