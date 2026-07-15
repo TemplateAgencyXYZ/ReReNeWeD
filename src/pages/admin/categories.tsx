@@ -26,7 +26,6 @@ export default function AdminCategories() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    image: "",
     slug: "",
   });
 
@@ -86,14 +85,12 @@ export default function AdminCategories() {
         await categoryService.updateCategory(editingCategory.id, {
           name: formData.name,
           description: formData.description,
-          image: formData.image || null,
           slug,
         });
       } else {
         await categoryService.createCategory({
           name: formData.name,
           description: formData.description,
-          image: formData.image || null,
           slug,
         });
       }
@@ -119,7 +116,7 @@ export default function AdminCategories() {
   }
 
   function resetForm() {
-    setFormData({ name: "", description: "", image: "", slug: "" });
+    setFormData({ name: "", description: "", slug: "" });
     setEditingCategory(null);
     setShowForm(false);
   }
@@ -129,7 +126,6 @@ export default function AdminCategories() {
     setFormData({
       name: category.name,
       description: category.description || "",
-      image: category.image || "",
       slug: category.slug,
     });
     setShowForm(true);
@@ -200,15 +196,6 @@ export default function AdminCategories() {
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     />
                   </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="cat-image">Image URL</Label>
-                    <Input
-                      id="cat-image"
-                      value={formData.image}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      placeholder="https://example.com/category-image.png"
-                    />
-                  </div>
                 </div>
 
                 <div className="flex gap-2">
@@ -226,21 +213,6 @@ export default function AdminCategories() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((category) => (
               <Card key={category.id}>
-                <CardHeader className="p-0">
-                  <div className="aspect-video bg-muted overflow-hidden rounded-t-lg">
-                    {category.image ? (
-                      <img
-                        src={category.image}
-                        alt={category.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                        No image
-                      </div>
-                    )}
-                  </div>
-                </CardHeader>
                 <CardContent className="p-4 space-y-2">
                   <h3 className="font-semibold">{category.name}</h3>
                   <p className="text-sm text-muted-foreground line-clamp-2">{category.description}</p>

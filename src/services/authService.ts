@@ -51,6 +51,25 @@ export const authService = {
     return session;
   },
 
+  // Get current user's profile
+  async getProfile(): Promise<Profile | null> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Get profile error:", error);
+      return null;
+    }
+
+    return data;
+  },
+
   // Sign up with email and password
   async signUp(email: string, password: string): Promise<{ user: AuthUser | null; error: AuthError | null }> {
     try {

@@ -34,6 +34,10 @@ export const addressService = {
     return data;
   },
 
+  async addAddress(userId: string, address: Omit<AddressInsert, "id" | "created_at" | "user_id">) {
+    return this.createAddress({ ...address, user_id: userId });
+  },
+
   async updateAddress(addressId: string, updates: Partial<AddressInsert>) {
     const { data, error } = await supabase
       .from("addresses")
