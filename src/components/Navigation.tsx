@@ -101,6 +101,14 @@ export function Navigation() {
             <Link href="/about" className="text-sm font-medium transition-colors hover:text-primary">
               About
             </Link>
+            {profile?.is_admin && (
+              <Link
+                href="/admin"
+                className="text-sm font-bold text-primary border border-primary/30 rounded-md px-3 py-1 transition-colors hover:bg-primary hover:text-primary-foreground"
+              >
+                Admin
+              </Link>
+            )}
           </nav>
         </div>
 

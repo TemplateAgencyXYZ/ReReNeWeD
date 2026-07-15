@@ -80,10 +80,13 @@ export default function AdminUsers() {
 
     try {
       if (currentStatus) {
-        const { error } = await supabase
-          .from("profiles")
-          .update({ is_admin: false })
-          .eq("id", userId);
+        if (!email) {
+          throw new Error("This user does not have an email address.");
+        }
+
+        const { error } = await supabase.rpc("demote_user_from_admin", {
+          target_email: email,
+        });
 
         if (error) throw error;
       } else {
