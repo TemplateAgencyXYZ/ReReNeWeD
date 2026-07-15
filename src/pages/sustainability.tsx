@@ -1,10 +1,18 @@
+import Link from "next/link";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Recycle, Droplets, TreePine, Package, Zap, Truck } from "lucide-react";
+import { Droplets, TreePine, Recycle, Package, Zap, Truck } from "lucide-react";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { RichTextContent } from "@/components/RichTextContent";
 
 export default function SustainabilityPage() {
+  const { contentMap } = useSiteContent(["sustainability"], {
+    sustainability:
+      "Sustainability isn't a marketing buzzword for us—it's the reason we exist. Every decision we make, from sourcing materials to packaging shipments, is guided by a simple principle: leave the planet better than we found it.\n\n## Our Materials\n\n**Ocean Plastic**\nWe partner with organizations that collect plastic waste from oceans, rivers, and coastal areas before it can harm marine ecosystems. This plastic is cleaned, processed, and transformed into durable goods.\n\n**Reclaimed Wood**\nOur wood products come from salvaged materials—old furniture, construction offcuts, and decommissioned structures. Instead of ending up in landfills, this wood is carefully restored and repurposed into beautiful, functional pieces.\n\n**Recycled Metals & Textiles**\nFrom aluminum cans to discarded fabric scraps, we source post-consumer and post-industrial materials that would otherwise contribute to landfill mass.",
+  });
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navigation />
@@ -23,78 +31,7 @@ export default function SustainabilityPage() {
 
           <div className="space-y-12">
             <section className="prose prose-lg max-w-none">
-              <p className="text-muted-foreground leading-relaxed text-lg">
-                Sustainability isn't a marketing buzzword for us—it's the reason we exist. Every decision we make, from sourcing materials to packaging shipments, is guided by a simple principle: <strong>leave the planet better than we found it</strong>.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="font-serif text-3xl font-bold mb-8">Our Materials</h2>
-
-              <div className="space-y-6">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex gap-4">
-                      <div className="flex-shrink-0">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary">
-                          <Droplets className="h-6 w-6" />
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-xl mb-2">Ocean Plastic</h3>
-                        <p className="text-sm text-muted-foreground">
-                          We partner with organizations that collect plastic waste from oceans, rivers, and coastal areas before it can harm marine ecosystems. This plastic is cleaned, processed, and transformed into durable goods—giving it a second life while removing it from waterways.
-                        </p>
-                        <p className="text-sm text-primary font-semibold mt-2">
-                          Impact: Every 1kg of ocean plastic recovered prevents approximately 0.5kg of CO₂ emissions
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex gap-4">
-                      <div className="flex-shrink-0">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary">
-                          <TreePine className="h-6 w-6" />
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-xl mb-2">Reclaimed Wood</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Our wood products come from salvaged materials—old furniture, construction offcuts, and decommissioned structures. Instead of ending up in landfills, this wood is carefully restored and repurposed into beautiful, functional pieces.
-                        </p>
-                        <p className="text-sm text-primary font-semibold mt-2">
-                          Impact: Saves approximately 100 liters of water and 2.5kg of CO₂ per kg compared to virgin wood
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex gap-4">
-                      <div className="flex-shrink-0">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary">
-                          <Recycle className="h-6 w-6" />
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-xl mb-2">Recycled Metals & Textiles</h3>
-                        <p className="text-sm text-muted-foreground">
-                          From aluminum cans to discarded fabric scraps, we source post-consumer and post-industrial materials that would otherwise contribute to landfill mass. These materials are processed and transformed into high-quality products without the environmental cost of virgin production.
-                        </p>
-                        <p className="text-sm text-primary font-semibold mt-2">
-                          Impact: Recycled aluminum uses 95% less energy than producing new aluminum from ore
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <RichTextContent content={contentMap.sustainability} />
             </section>
 
             <section>
@@ -217,21 +154,6 @@ export default function SustainabilityPage() {
               </div>
             </section>
 
-            <section className="prose prose-lg max-w-none">
-              <h2 className="font-serif text-3xl font-bold mb-6">Transparency & Certifications</h2>
-
-              <p className="text-muted-foreground leading-relaxed">
-                We believe in radical transparency. Every product listing includes detailed information about its recycled source, manufacturing process, and environmental impact. We're proud to hold certifications from:
-              </p>
-
-              <ul className="text-muted-foreground space-y-2">
-                <li><strong>Global Recycled Standard (GRS)</strong> — Verifying our recycled content claims</li>
-                <li><strong>Carbon Trust</strong> — Validating our carbon footprint measurements</li>
-                <li><strong>Fair Trade</strong> — Ensuring ethical labor practices throughout our supply chain</li>
-                <li><strong>B Corp Certification</strong> (pending) — Demonstrating our commitment to social and environmental performance</li>
-              </ul>
-            </section>
-
             <div className="mt-12 p-8 bg-muted/30 rounded-lg text-center">
               <h2 className="font-serif text-2xl font-bold mb-4">
                 Have questions about our sustainability practices?
@@ -239,9 +161,9 @@ export default function SustainabilityPage() {
               <p className="text-muted-foreground mb-6">
                 We're always happy to discuss our materials, processes, and impact in detail.
               </p>
-              <a href="/contact" className="text-primary font-semibold hover:underline">
+              <Link href="/contact" className="text-primary font-semibold hover:underline">
                 Get in Touch →
-              </a>
+              </Link>
             </div>
           </div>
         </div>

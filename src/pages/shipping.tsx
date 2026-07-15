@@ -1,10 +1,18 @@
+import Link from "next/link";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, Package, MapPin, Clock } from "lucide-react";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { RichTextContent } from "@/components/RichTextContent";
 
 export default function ShippingPage() {
+  const { contentMap } = useSiteContent(["shipping_info"], {
+    shipping_info:
+      "## Shipping Methods\n\n**Standard Shipping**\nDelivery within 5-7 business days across India. Free on orders over ₹500. ₹50 flat rate for orders under ₹500.\n\n**Express Shipping**\nDelivery within 2-3 business days to major cities. ₹150 flat rate. Available in Mumbai, Delhi, Bangalore, Chennai, Hyderabad, and more.\n\n## Processing Time\n\nOrders are typically processed within 1-2 business days. During peak seasons, processing may take up to 3 business days.\n\n## Sustainable Packaging\n\nAll orders are packaged using 100% recycled cardboard boxes, biodegradable packing materials, and paper-based tape. No plastic bubble wrap.\n\n## Order Tracking\n\nOnce your order ships, you'll receive a confirmation email with tracking information. You can also log into your account and visit the Orders section to view real-time updates.",
+  });
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navigation />
@@ -27,42 +35,14 @@ export default function ShippingPage() {
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
                   <Truck className="h-5 w-5" />
                 </div>
-                <h2 className="font-serif text-2xl font-bold">Shipping Methods</h2>
+                <h2 className="font-serif text-2xl font-bold">Shipping Details</h2>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                  <CardContent className="pt-6 space-y-3">
-                    <h3 className="font-semibold text-lg">Standard Shipping</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Delivery within 5-7 business days across India
-                    </p>
-                    <div className="pt-2">
-                      <span className="text-2xl font-bold text-primary">Free</span>
-                      <span className="text-sm text-muted-foreground ml-2">on orders over ₹500</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      ₹50 flat rate for orders under ₹500
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6 space-y-3">
-                    <h3 className="font-semibold text-lg">Express Shipping</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Delivery within 2-3 business days to major cities
-                    </p>
-                    <div className="pt-2">
-                      <span className="text-2xl font-bold text-primary">₹150</span>
-                      <span className="text-sm text-muted-foreground ml-2">flat rate</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Available in Mumbai, Delhi, Bangalore, Chennai, Hyderabad, and more
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+              <Card>
+                <CardContent className="pt-6">
+                  <RichTextContent content={contentMap.shipping_info} />
+                </CardContent>
+              </Card>
             </section>
 
             <section>
@@ -99,87 +79,6 @@ export default function ShippingPage() {
               </Card>
             </section>
 
-            <section>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
-                  <Clock className="h-5 w-5" />
-                </div>
-                <h2 className="font-serif text-2xl font-bold">Processing Time</h2>
-              </div>
-
-              <Card>
-                <CardContent className="pt-6 space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    Orders are typically processed within 1-2 business days. During peak seasons (festivals, sales), processing may take up to 3 business days.
-                  </p>
-
-                  <div className="space-y-2">
-                    <p className="text-sm font-semibold">What "processing" means:</p>
-                    <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                      <li>Verifying payment confirmation</li>
-                      <li>Quality checking your items</li>
-                      <li>Packaging with eco-friendly materials</li>
-                      <li>Generating shipping label and tracking</li>
-                    </ul>
-                  </div>
-
-                  <p className="text-sm text-muted-foreground">
-                    Once your order ships, you'll receive a confirmation email with tracking information.
-                  </p>
-                </CardContent>
-              </Card>
-            </section>
-
-            <section>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
-                  <Package className="h-5 w-5" />
-                </div>
-                <h2 className="font-serif text-2xl font-bold">Sustainable Packaging</h2>
-              </div>
-
-              <Card>
-                <CardContent className="pt-6 space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    True to our commitment to sustainability, all orders are packaged using:
-                  </p>
-
-                  <ul className="text-sm text-muted-foreground space-y-2 list-disc list-inside">
-                    <li>100% recycled cardboard boxes</li>
-                    <li>Biodegradable packing materials</li>
-                    <li>Paper-based tape (no plastic)</li>
-                    <li>Minimal packaging approach to reduce waste</li>
-                  </ul>
-
-                  <p className="text-sm text-muted-foreground">
-                    We encourage you to reuse or recycle all packaging materials when your order arrives.
-                  </p>
-                </CardContent>
-              </Card>
-            </section>
-
-            <section>
-              <h2 className="font-serif text-2xl font-bold mb-6">Order Tracking</h2>
-
-              <Card>
-                <CardContent className="pt-6 space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    Once your order ships, you can track its journey:
-                  </p>
-
-                  <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
-                    <li>Check your email for the shipping confirmation with tracking number</li>
-                    <li>Log into your account and visit the "Orders" section</li>
-                    <li>Click on your order to view real-time tracking updates</li>
-                  </ol>
-
-                  <p className="text-sm text-muted-foreground">
-                    Tracking information is typically updated within 24 hours of shipment. If you notice any issues, please contact our support team.
-                  </p>
-                </CardContent>
-              </Card>
-            </section>
-
             <div className="mt-12 p-8 bg-muted/30 rounded-lg text-center">
               <h2 className="font-serif text-2xl font-bold mb-4">
                 Questions about shipping?
@@ -187,9 +86,9 @@ export default function ShippingPage() {
               <p className="text-muted-foreground mb-6">
                 Our customer support team is here to help with any delivery-related inquiries.
               </p>
-              <a href="/contact" className="text-primary font-semibold hover:underline">
+              <Link href="/contact" className="text-primary font-semibold hover:underline">
                 Contact Support →
-              </a>
+              </Link>
             </div>
           </div>
         </div>

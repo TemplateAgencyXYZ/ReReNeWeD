@@ -1,10 +1,18 @@
+import Link from "next/link";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Globe, Leaf } from "lucide-react";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { RichTextContent } from "@/components/RichTextContent";
 
 export default function StoryPage() {
+  const { contentMap } = useSiteContent(["our_story"], {
+    our_story:
+      "It started with a simple question: What if waste wasn't waste at all, but raw material waiting for its second life?\n\nIn 2020, in a small workshop in Mumbai, our founders began experimenting with discarded ocean plastic, reclaimed wood, and recycled metals. What started as a passion project quickly transformed into a mission—to prove that sustainability and quality don't have to be at odds.\n\nToday, we're proud to offer a carefully curated collection of recycled goods that challenge the notion that \"new\" is always better. Every product in our catalog tells a story of transformation—materials that once headed for landfills now serve beautiful, functional purposes in homes across India.",
+  });
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navigation />
@@ -23,17 +31,7 @@ export default function StoryPage() {
 
           <div className="space-y-12">
             <section className="prose prose-lg max-w-none">
-              <p className="text-muted-foreground leading-relaxed">
-                It started with a simple question: <em>What if waste wasn't waste at all, but raw material waiting for its second life?</em>
-              </p>
-
-              <p className="text-muted-foreground leading-relaxed">
-                In 2020, in a small workshop in Mumbai, our founders began experimenting with discarded ocean plastic, reclaimed wood, and recycled metals. What started as a passion project quickly transformed into a mission—to prove that sustainability and quality don't have to be at odds.
-              </p>
-
-              <p className="text-muted-foreground leading-relaxed">
-                Today, we're proud to offer a carefully curated collection of recycled goods that challenge the notion that "new" is always better. Every product in our catalog tells a story of transformation—materials that once headed for landfills now serve beautiful, functional purposes in homes across India.
-              </p>
+              <RichTextContent content={contentMap.our_story} />
             </section>
 
             <section>
@@ -109,25 +107,6 @@ export default function StoryPage() {
               </div>
             </section>
 
-            <section className="prose prose-lg max-w-none">
-              <h2 className="font-serif text-3xl font-bold mb-6">Looking Ahead</h2>
-
-              <p className="text-muted-foreground leading-relaxed">
-                Our vision extends far beyond e-commerce. We're working to build a comprehensive ecosystem that makes sustainable living accessible and desirable for everyone. This includes:
-              </p>
-
-              <ul className="text-muted-foreground space-y-2">
-                <li>Expanding our recycling partnerships to include more post-consumer materials</li>
-                <li>Launching educational initiatives about circular economy principles</li>
-                <li>Developing innovative products that push the boundaries of what's possible with recycled materials</li>
-                <li>Supporting policy changes that incentivize sustainable consumption</li>
-              </ul>
-
-              <p className="text-muted-foreground leading-relaxed">
-                We believe that choosing recycled products shouldn't feel like a sacrifice—it should feel like an upgrade. A conscious choice that brings joy, functionality, and the satisfaction of knowing you're part of something bigger.
-              </p>
-            </section>
-
             <div className="mt-12 p-8 bg-primary text-primary-foreground rounded-lg text-center">
               <h2 className="font-serif text-2xl font-bold mb-4">
                 Join the Movement
@@ -135,9 +114,9 @@ export default function StoryPage() {
               <p className="mb-6 opacity-90">
                 Every purchase is a vote for a more sustainable future. Together, we can redefine what "value" means.
               </p>
-              <a href="/products" className="inline-block bg-background text-foreground px-6 py-3 rounded-md font-semibold hover:bg-background/90 transition-colors">
+              <Link href="/products" className="inline-block bg-background text-foreground px-6 py-3 rounded-md font-semibold hover:bg-background/90 transition-colors">
                 Shop Recycled Goods →
-              </a>
+              </Link>
             </div>
           </div>
         </div>
