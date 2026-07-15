@@ -111,24 +111,43 @@ export default function ProductsPage() {
 
         <section className="py-12">
           <div className="container">
-            <div className="flex flex-wrap gap-2 mb-8 justify-center">
-              <Button
-                variant={activeCategory === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleCategoryChange("all")}
-              >
-                All
-              </Button>
-              {categories.map((category) => (
+            <div className="mb-10">
+              <h2 className="font-serif text-2xl font-bold text-center mb-6">Shop by Category</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => handleCategoryChange(category.id)}
+                    className="group text-left overflow-hidden rounded-xl border border-border bg-card hover:shadow-lg transition-shadow"
+                  >
+                    <div className="aspect-[3/2] bg-muted overflow-hidden">
+                      <img
+                        src={category.image || "/shop-categories-example.png"}
+                        alt={category.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-lg">{category.name}</h3>
+                      {category.description && (
+                        <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                          {category.description}
+                        </p>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex justify-center mt-8">
                 <Button
-                  key={category.id}
-                  variant={activeCategory === category.id ? "default" : "outline"}
+                  variant={activeCategory === "all" ? "default" : "outline"}
                   size="sm"
-                  onClick={() => handleCategoryChange(category.id)}
+                  onClick={() => handleCategoryChange("all")}
                 >
-                  {category.name}
+                  {activeCategory === "all" ? "Showing All Products" : "Show All Products"}
                 </Button>
-              ))}
+              </div>
             </div>
 
             {loading ? (
