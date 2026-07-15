@@ -100,13 +100,17 @@ async function handleCreateOrder(
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
-    .select("id, total_amount, status, profiles(email, full_name, phone)")
+    .select("id, total_amount, status, user_id, profiles(email, full_name, phone)")
     .eq("id", localOrderId)
     .single();
 
   if (orderError || !order) {
     console.error("Order lookup error:", orderError);
     return res.status(404).json({ error: "Order not found" });
+  }
+
+  if (order.user_id !== user.id) {
+    return res.status(403).json({ error: "Order does not belong to user" });
   }
 
   if (order.status !== "pending") {
