@@ -12,7 +12,7 @@ import { authService } from "@/services/authService";
 import { addressService } from "@/services/addressService";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type Address = Database["public"]["Tables"]["addresses"]["Row"];
@@ -20,6 +20,7 @@ type Address = Database["public"]["Tables"]["addresses"]["Row"];
 export default function SettingsPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Partial<Profile>>({});
+  const [userEmail, setUserEmail] = useState("");
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -28,6 +29,12 @@ export default function SettingsPage() {
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
+  });
+
+  const [showPasswords, setShowPasswords] = useState({
+    currentPassword: false,
+    newPassword: false,
+    confirmPassword: false,
   });
 
   const [newAddress, setNewAddress] = useState<Partial<Address>>({
@@ -53,6 +60,8 @@ export default function SettingsPage() {
         return;
       }
 
+      setUserEmail(session.user.email || "");
+
       const [profileData, addressData] = await Promise.all([
         authService.getProfile(),
         addressService.getUserAddresses(session.user.id),
@@ -71,14 +80,10 @@ export default function SettingsPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          full_name: profile.full_name,
-          phone: profile.phone,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", profile.id);
+      const { error } = await authService.updateProfile({
+        full_name: profile.full_name,
+        phone: profile.phone,
+      });
 
       if (error) throw error;
       alert("Profile updated successfully.");
@@ -196,7 +201,8 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" value={profile.email || ""} disabled />
+                  <Input id="email" value={userEmail} disabled />
+                  <p className="text-xs text-muted-foreground">Email is tied to your login identity and cannot be changed here.</p>
                 </div>
                 <Button type="submit" disabled={saving}>
                   {saving ? "Saving..." : "Save Profile"}
@@ -213,23 +219,43 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="new-password">New Password</Label>
-                  <Input
-                    id="new-password"
-                    type="password"
-                    value={passwordData.newPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="new-password"
+                      type={showPasswords.newPassword ? "text" : "password"}
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswords({ ...showPasswords, newPassword: !showPasswords.newPassword })}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      tabIndex={-1}
+                    >
+                      {showPasswords.newPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password">Confirm New Password</Label>
-                  <Input
-                    id="confirm-password"
-                    type="password"
-                    value={passwordData.confirmPassword}
-                    onChange={(e) =>
-                      setPasswordData({ ...passwordData, confirmPassword: e.target.value })
-                    }
-                  />
+                  <div className="relative">
+                    <Input
+                      id="confirm-password"
+                      type={showPasswords.confirmPassword ? "text" : "password"}
+                      value={passwordData.confirmPassword}
+                      onChange={(e) =>
+                        setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                      }
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswords({ ...showPasswords, confirmPassword: !showPasswords.confirmPassword })}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      tabIndex={-1}
+                    >
+                      {showPasswords.confirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
                 <Button type="submit">Update Password</Button>
               </CardContent>

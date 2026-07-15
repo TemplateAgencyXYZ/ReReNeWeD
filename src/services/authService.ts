@@ -215,6 +215,32 @@ export const authService = {
     }
   },
 
+  // Update profile fields
+  async updateProfile(updates: Partial<Pick<Profile, "full_name" | "phone" | "avatar_url">>): Promise<{ error: AuthError | null }> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        return { error: { message: "Not authenticated" } };
+      }
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", user.id);
+
+      if (error) {
+        return { error: { message: error.message, code: error.code } };
+      }
+
+      return { error: null };
+    } catch (error) {
+      return { error: { message: "An unexpected error occurred while updating profile" } };
+    }
+  },
+
   // Listen to auth state changes
   onAuthStateChange(callback: (event: string, session: Session | null) => void) {
     return supabase.auth.onAuthStateChange(callback);
