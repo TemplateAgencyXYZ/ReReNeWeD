@@ -15,7 +15,7 @@ import { authService } from "@/services/authService";
 import { productService } from "@/services/productService";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, ImageIcon } from "lucide-react";
 
 type Product = Database["public"]["Tables"]["products"]["Row"];
 type Category = Database["public"]["Tables"]["categories"]["Row"];
@@ -378,7 +378,7 @@ export default function AdminProducts() {
                 </CardHeader>
                 <CardContent className="p-4 space-y-2">
                   <h3 className="font-semibold">{product.name}</h3>
-                  <p className="text-2xl font-bold text-primary">${product.price.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-primary">₹{product.price.toFixed(2)}</p>
                   <p className="text-sm text-muted-foreground">Stock: {product.stock}</p>
                   <p className="text-sm text-muted-foreground">
                     Recycled: {product.is_recycled ? "Yes" : "No"}
@@ -399,11 +399,20 @@ export default function AdminProducts() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDelete(product.id)}
+                      onClick={async () => {
+                        try {
+                          await productService.assignPlaceholderImage(product.id);
+                          await loadData();
+                        } catch (error) {
+                          console.error("Placeholder error:", error);
+                          alert("Failed to assign placeholder image");
+                        }
+                      }}
+                      disabled={!!product.images?.[0]}
                       className="flex-1"
                     >
-                      <Trash2 className="h-3 w-3 mr-1" />
-                      Delete
+                      <ImageIcon className="h-3 w-3 mr-1" />
+                      {product.images?.[0] ? "Has Image" : "Use Placeholder"}
                     </Button>
                   </div>
                 </CardContent>

@@ -21,6 +21,18 @@ export const ADMIN_CONTENT_SECTIONS: AdminContentSection[] = [
       "Our Story\n\nReReNeWeD began with a simple idea: useful materials deserve a second life. We collect discarded paper, plastic, and fabric from offices, schools, and communities, then transform them into thoughtfully designed stationery.\n\nEvery pencil, notebook, and diary we make carries a smaller footprint than its virgin counterpart. We work with local recyclers and artisans to keep materials in circulation and reduce landfill waste.",
   },
   {
+    key: "about_body",
+    label: "Our Story",
+    pageName: "Our Story / About",
+    defaultValue: `ReReNeWeD began with a simple question: what happens to materials after their first use?
+
+We believe the best answer is a second life — thoughtfully designed, carefully crafted, and honestly sold. Every product in our store is made from recycled or renewed materials, sourced responsibly and finished by makers who care about quality as much as impact.
+
+Our mission is to make sustainable shopping feel effortless. You should not have to choose between what looks good and what does good.
+
+Thank you for being part of the cycle.`,
+  },
+  {
     key: "sustainability",
     label: "Sustainability",
     pageName: "Sustainability",
