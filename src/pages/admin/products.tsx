@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { AdminTabs } from "@/components/admin/AdminTabs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { authService } from "@/services/authService";
@@ -37,6 +38,8 @@ export default function AdminProducts() {
     images: [] as string[],
     is_featured: false,
     is_new_arrival: false,
+    is_recycled: true,
+    special_feature: "",
   });
 
   useEffect(() => {
@@ -99,6 +102,8 @@ export default function AdminProducts() {
         images: formData.images,
         is_featured: formData.is_featured,
         is_new_arrival: formData.is_new_arrival,
+        is_recycled: formData.is_recycled,
+        special_feature: formData.special_feature,
       };
 
       if (editingProduct) {
@@ -145,6 +150,8 @@ export default function AdminProducts() {
       images: [],
       is_featured: false,
       is_new_arrival: false,
+      is_recycled: true,
+      special_feature: "",
     });
     setEditingProduct(null);
     setShowForm(false);
@@ -162,6 +169,8 @@ export default function AdminProducts() {
       images: product.images || [],
       is_featured: product.is_featured || false,
       is_new_arrival: product.is_new_arrival || false,
+      is_recycled: product.is_recycled ?? true,
+      special_feature: product.special_feature || "",
     });
     setShowForm(true);
   }
@@ -196,6 +205,8 @@ export default function AdminProducts() {
               </Button>
             )}
           </div>
+
+          <AdminTabs />
 
           {showForm && (
             <Card className="mb-8">
@@ -273,12 +284,36 @@ export default function AdminProducts() {
                     />
                   </div>
 
+                  <div>
+                    <Label htmlFor="special_feature">Special Feature</Label>
+                    <Input
+                      id="special_feature"
+                      value={formData.special_feature}
+                      onChange={(e) => setFormData({ ...formData, special_feature: e.target.value })}
+                      placeholder="e.g., Includes seed paper insert"
+                    />
+                  </div>
+
                   <div className="col-span-2">
                     <Label>Product Images</Label>
                     <ImageUploader
                       images={formData.images}
                       onImagesChange={(images) => setFormData({ ...formData, images })}
                       productId={editingProduct?.id}
+                    />
+                  </div>
+
+                  <div className="col-span-2 flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="is-recycled">Recycled Material Flag</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Controls whether recycled badges appear on the storefront
+                      </p>
+                    </div>
+                    <Switch
+                      id="is-recycled"
+                      checked={formData.is_recycled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, is_recycled: checked })}
                     />
                   </div>
 
@@ -345,6 +380,14 @@ export default function AdminProducts() {
                   <h3 className="font-semibold">{product.name}</h3>
                   <p className="text-2xl font-bold text-primary">${product.price.toFixed(2)}</p>
                   <p className="text-sm text-muted-foreground">Stock: {product.stock}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Recycled: {product.is_recycled ? "Yes" : "No"}
+                  </p>
+                  {product.special_feature && (
+                    <p className="text-sm text-muted-foreground">
+                      Feature: {product.special_feature}
+                    </p>
+                  )}
                   {product.recycled_from && (
                     <p className="text-sm text-muted-foreground">From: {product.recycled_from}</p>
                   )}

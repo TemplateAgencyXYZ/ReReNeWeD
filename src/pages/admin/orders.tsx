@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import Link from "next/link";
 import { Package } from "lucide-react";
+import { AdminTabs } from "@/components/admin/AdminTabs";
 
 type Order = Database["public"]["Tables"]["orders"]["Row"] & {
   profiles?: { full_name: string | null; email: string | null } | null;
@@ -108,6 +109,8 @@ export default function AdminOrders() {
         return "bg-green-100 text-green-800 border-green-300";
       case "cancelled":
         return "bg-red-100 text-red-800 border-red-300";
+      case "payment_failed":
+        return "bg-rose-100 text-rose-800 border-rose-300";
       default:
         return "bg-gray-100 text-gray-800 border-gray-300";
     }
@@ -148,9 +151,12 @@ export default function AdminOrders() {
                 <SelectItem value="shipped">Shipped</SelectItem>
                 <SelectItem value="delivered">Delivered</SelectItem>
                 <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectItem value="payment_failed">Payment Failed</SelectItem>
               </SelectContent>
             </Select>
           </div>
+
+          <AdminTabs />
 
           <div className="grid gap-4">
             {filteredOrders.map((order) => (

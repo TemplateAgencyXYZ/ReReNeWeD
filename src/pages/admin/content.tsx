@@ -1,33 +1,34 @@
-import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { authService } from "@/services/authService";
-import { contentService } from "@/services/contentService";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdminTabs } from "@/components/admin/AdminTabs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { authService } from "@/services/authService";
+import { contentService } from "@/services/contentService";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ADMIN_CONTENT_SECTIONS,
-  type AdminContentSection,
+  DEFAULT_CONTENT_VALUES,
 } from "@/lib/admin-content";
+import { Check, Loader2 } from "lucide-react";
 
-export default function AdminContentPage() {
+export default function AdminContent() {
   const router = useRouter();
-  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});
+  const [saved, setSaved] = useState<Record<string, boolean>>({});
+  const [values, setValues] = useState<Record<string, string>>(DEFAULT_CONTENT_VALUES);
 
   useEffect(() => {
-    checkAdminAccess();
+    checkAdminAndLoad();
   }, []);
 
-  async function checkAdminAccess() {
+  async function checkAdminAndLoad() {
     try {
       const session = await authService.getCurrentSession();
       if (!session) {
@@ -46,7 +47,6 @@ export default function AdminContentPage() {
         return;
       }
 
-      setIsAdmin(true);
       await loadContent();
     } catch (error) {
       console.error("Admin check error:", error);
@@ -58,43 +58,37 @@ export default function AdminContentPage() {
 
   async function loadContent() {
     try {
-      const initial: Record<string, string> = {};
-      for (const section of ADMIN_CONTENT_SECTIONS) {
-        const { content_value } = await contentService.getContent(
-          section.key,
-          section.defaultValue
-        );
-        initial[section.key] = content_value || section.defaultValue;
+      const all = await contentService.getAll();
+      const next: Record<string, string> = { ...DEFAULT_CONTENT_VALUES };
+      for (const row of all) {
+        next[row.content_key] = row.content_value;
       }
-      setValues(initial);
+      setValues(next);
     } catch (error) {
-      console.error("Error loading content:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load content. Please refresh.",
-        variant: "destructive",
-      });
+      console.error("Load content error:", error);
     }
   }
 
-  async function handleSave(section: AdminContentSection) {
-    setSaving((prev) => ({ ...prev, [section.key]: true }));
+  async function handleSave(sectionKey: string) {
+    setSaving((prev) => ({ ...prev, [sectionKey]: true }));
+    setSaved((prev) => ({ ...prev, [sectionKey]: false }));
+
     try {
-      await contentService.updateContent(section.key, values[section.key] || "");
-      toast({
-        title: "Saved",
-        description: `${section.label} content has been updated and is live.`,
-      });
+      await contentService.update(sectionKey, values[sectionKey] || "");
+      setSaved((prev) => ({ ...prev, [sectionKey]: true }));
+      setTimeout(() => {
+        setSaved((prev) => ({ ...prev, [sectionKey]: false }));
+      }, 2000);
     } catch (error) {
-      console.error("Save error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save content. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Save content error:", error);
+      alert("Failed to save content");
     } finally {
-      setSaving((prev) => ({ ...prev, [section.key]: false }));
+      setSaving((prev) => ({ ...prev, [sectionKey]: false }));
     }
+  }
+
+  function updateValue(sectionKey: string, value: string) {
+    setValues((prev) => ({ ...prev, [sectionKey]: value }));
   }
 
   if (loading) {
@@ -102,15 +96,11 @@ export default function AdminContentPage() {
       <div className="flex flex-col min-h-screen">
         <Navigation />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Loading admin panel...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </main>
         <Footer />
       </div>
     );
-  }
-
-  if (!isAdmin) {
-    return null;
   }
 
   return (
@@ -122,18 +112,16 @@ export default function AdminContentPage() {
           <div className="mb-8">
             <h1 className="font-serif text-4xl font-bold">Content Editor</h1>
             <p className="text-muted-foreground">
-              Edit public-facing page content. Changes are reflected immediately.
+              Edit public-facing copy. Changes are reflected immediately on the site.
             </p>
           </div>
 
-          <Tabs defaultValue={ADMIN_CONTENT_SECTIONS[0].key} className="w-full">
-            <TabsList className="flex flex-wrap h-auto gap-2 mb-6">
+          <AdminTabs />
+
+          <Tabs defaultValue={ADMIN_CONTENT_SECTIONS[0].key} className="space-y-6">
+            <TabsList className="flex flex-wrap h-auto gap-2">
               {ADMIN_CONTENT_SECTIONS.map((section) => (
-                <TabsTrigger
-                  key={section.key}
-                  value={section.key}
-                  className="text-xs"
-                >
+                <TabsTrigger key={section.key} value={section.key}>
                   {section.label}
                 </TabsTrigger>
               ))}
@@ -147,27 +135,46 @@ export default function AdminContentPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                      This content is shown on the public {section.pageName}{" "}
-                      page. Plain text or basic HTML/Markdown is supported.
+                      This content is shown on the public{" "}
+                      <span className="font-medium text-foreground">{section.pageName}</span> page.
+                      Plain text or basic HTML/Markdown supported.
                     </p>
-                    <Textarea
-                      value={values[section.key] ?? section.defaultValue}
-                      onChange={(e) =>
-                        setValues((prev) => ({
-                          ...prev,
-                          [section.key]: e.target.value,
-                        }))
-                      }
-                      rows={16}
-                      className="font-mono text-sm"
-                    />
-                    <div className="flex justify-end">
+
+                    <div className="space-y-2">
+                      <Label htmlFor={`textarea-${section.key}`}>Content</Label>
+                      <Textarea
+                        id={`textarea-${section.key}`}
+                        value={values[section.key] || ""}
+                        onChange={(e) => updateValue(section.key, e.target.value)}
+                        rows={18}
+                        className="font-mono text-sm leading-relaxed"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-3">
                       <Button
-                        onClick={() => handleSave(section)}
+                        onClick={() => handleSave(section.key)}
                         disabled={saving[section.key]}
                       >
-                        {saving[section.key] ? "Saving..." : "Save Changes"}
+                        {saving[section.key] ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Saving...
+                          </>
+                        ) : saved[section.key] ? (
+                          <>
+                            <Check className="h-4 w-4 mr-2" />
+                            Saved
+                          </>
+                        ) : (
+                          "Save"
+                        )}
                       </Button>
+                      {saved[section.key] && (
+                        <span className="text-sm text-green-600">
+                          Live content updated.
+                        </span>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

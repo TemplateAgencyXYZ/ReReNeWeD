@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { AdminTabs } from "@/components/admin/AdminTabs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { authService } from "@/services/authService";
@@ -20,6 +21,7 @@ export default function AdminUsers() {
   const [users, setUsers] = useState<Profile[]>([]);
   const [editingUser, setEditingUser] = useState<Profile | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [promoteEmail, setPromoteEmail] = useState("");
 
   const [formData, setFormData] = useState({
     full_name: "",
@@ -73,20 +75,55 @@ export default function AdminUsers() {
     }
   }
 
-  async function toggleAdminStatus(userId: string, currentStatus: boolean) {
+  async function toggleAdminStatus(userId: string, currentStatus: boolean, email: string | null) {
     if (!confirm(`${currentStatus ? "Remove" : "Grant"} admin privileges for this user?`)) return;
 
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ is_admin: !currentStatus })
-        .eq("id", userId);
+      if (currentStatus) {
+        const { error } = await supabase
+          .from("profiles")
+          .update({ is_admin: false })
+          .eq("id", userId);
 
-      if (error) throw error;
+        if (error) throw error;
+      } else {
+        if (!email) {
+          throw new Error("This user does not have an email address.");
+        }
+
+        const { error } = await supabase.rpc("promote_user_to_admin", {
+          target_email: email,
+        });
+
+        if (error) throw error;
+      }
+
       await loadUsers();
     } catch (error) {
       console.error("Toggle admin error:", error);
-      alert("Failed to update admin status");
+      alert(error instanceof Error ? error.message : "Failed to update admin status");
+    }
+  }
+
+  async function promoteByEmail() {
+    if (!promoteEmail.trim()) {
+      alert("Enter an email address to promote.");
+      return;
+    }
+
+    try {
+      const { error } = await supabase.rpc("promote_user_to_admin", {
+        target_email: promoteEmail.trim(),
+      });
+
+      if (error) throw error;
+
+      setPromoteEmail("");
+      await loadUsers();
+      alert("Admin access granted.");
+    } catch (error) {
+      console.error("Promote admin error:", error);
+      alert(error instanceof Error ? error.message : "Failed to grant admin access");
     }
   }
 
@@ -151,6 +188,27 @@ export default function AdminUsers() {
             <h1 className="font-serif text-4xl font-bold">User Management</h1>
             <p className="text-muted-foreground">{users.length} registered users</p>
           </div>
+
+          <AdminTabs />
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Admin Promotion</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex flex-col gap-3 md:flex-row">
+                <Input
+                  placeholder="Enter user email to grant admin access"
+                  value={promoteEmail}
+                  onChange={(e) => setPromoteEmail(e.target.value)}
+                />
+                <Button onClick={promoteByEmail}>Grant Admin Access</Button>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Promotions use the <code>promote_user_to_admin()</code> SECURITY DEFINER function.
+              </p>
+            </CardContent>
+          </Card>
 
           <div className="mb-6">
             <Input
@@ -245,7 +303,7 @@ export default function AdminUsers() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => toggleAdminStatus(user.id, user.is_admin || false)}
+                        onClick={() => toggleAdminStatus(user.id, user.is_admin || false, user.email)}
                       >
                         {user.is_admin ? (
                           <>
