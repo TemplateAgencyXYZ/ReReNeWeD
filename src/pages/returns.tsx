@@ -1,10 +1,18 @@
+import Link from "next/link";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { RotateCcw, Package, CheckCircle2, AlertCircle } from "lucide-react";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { RichTextContent } from "@/components/RichTextContent";
 
 export default function ReturnsPage() {
+  const { contentMap } = useSiteContent(["returns_policy"], {
+    returns_policy:
+      "## Our Promise\n\nWe want you to love every purchase! If you're not completely satisfied with your recycled goods, you can return them within 30 days of delivery for a full refund—no questions asked.\n\n## Return Eligibility\n\n- Items in original, unused condition with tags intact\n- Defective or damaged items (we cover return shipping)\n- Items that don't match the product description\n\nItems not eligible: returns after 30 days, used or worn items, items missing packaging/tags, customized items, or clearance sale items unless defective.\n\n## Refund Timeline\n\nRefunds are processed to the original payment method within 7-10 business days after we receive and inspect the return.",
+  });
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navigation />
@@ -31,25 +39,8 @@ export default function ReturnsPage() {
               </div>
 
               <Card>
-                <CardContent className="pt-6 space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    We want you to love every purchase! If you're not completely satisfied with your recycled goods, you can return them within 30 days of delivery for a full refund—no questions asked.
-                  </p>
-
-                  <div className="grid md:grid-cols-3 gap-4 pt-4">
-                    <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-primary mb-1">30 Days</div>
-                      <div className="text-sm text-muted-foreground">Return window</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-primary mb-1">Free</div>
-                      <div className="text-sm text-muted-foreground">Return shipping (defects)</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-primary mb-1">100%</div>
-                      <div className="text-sm text-muted-foreground">Money back guarantee</div>
-                    </div>
-                  </div>
+                <CardContent className="pt-6">
+                  <RichTextContent content={contentMap.returns_policy} />
                 </CardContent>
               </Card>
             </section>
@@ -120,7 +111,7 @@ export default function ReturnsPage() {
                       <div>
                         <h3 className="font-semibold mb-1">Get your refund</h3>
                         <p className="text-sm text-muted-foreground">
-                          Once we receive and inspect your return (typically 3-5 business days), we'll process your refund. It will appear in your account within 7-10 business days.
+                          Once we receive and inspect your return (typically 3-5 business days), we'll process your refund within 7-10 business days.
                         </p>
                       </div>
                     </li>
@@ -169,58 +160,6 @@ export default function ReturnsPage() {
               </Card>
             </section>
 
-            <section>
-              <h2 className="font-serif text-2xl font-bold mb-6">Refund Details</h2>
-
-              <Card>
-                <CardContent className="pt-6 space-y-4">
-                  <div>
-                    <h3 className="font-semibold mb-2">Refund Method</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Refunds are issued to the original payment method used at checkout. If you paid with a credit card, the refund will appear on that card. For UPI or net banking payments, the amount will be credited back to your account.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold mb-2">Refund Timeline</h3>
-                    <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                      <li>Processing time: 3-5 business days after we receive your return</li>
-                      <li>Bank processing: 7-10 business days (varies by payment method)</li>
-                      <li>Total time: Approximately 10-15 business days from when you ship the return</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold mb-2">Partial Refunds</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Partial refunds may be issued if the item is not in its original condition, is damaged, or is missing parts for reasons not due to our error.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </section>
-
-            <section>
-              <h2 className="font-serif text-2xl font-bold mb-6">Exchanges</h2>
-
-              <Card>
-                <CardContent className="pt-6 space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    We currently don't offer direct exchanges. If you'd like a different size, color, or item, please:
-                  </p>
-
-                  <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-                    <li>Return the original item for a full refund</li>
-                    <li>Place a new order for the item you prefer</li>
-                  </ol>
-
-                  <p className="text-sm text-muted-foreground">
-                    This ensures you get your replacement quickly without waiting for the return to be processed.
-                  </p>
-                </CardContent>
-              </Card>
-            </section>
-
             <div className="mt-12 p-8 bg-muted/30 rounded-lg text-center">
               <h2 className="font-serif text-2xl font-bold mb-4">
                 Need help with a return?
@@ -228,9 +167,9 @@ export default function ReturnsPage() {
               <p className="text-muted-foreground mb-6">
                 Our support team is ready to assist you with any return or refund questions.
               </p>
-              <a href="/contact" className="text-primary font-semibold hover:underline">
+              <Link href="/contact" className="text-primary font-semibold hover:underline">
                 Contact Support →
-              </a>
+              </Link>
             </div>
           </div>
         </div>

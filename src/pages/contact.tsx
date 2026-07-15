@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,8 +8,20 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { RichTextContent } from "@/components/RichTextContent";
 
 export default function ContactPage() {
+  const { contentMap } = useSiteContent(["contact_us"], {
+    contact_us:
+      "**Email:** support@example.com\n\n**Phone:** +91 1800-123-4567\n\n**Address:** 123 Green Street, Mumbai, Maharashtra 400001\n\n**Hours:**\n- Monday - Friday: 9:00 AM - 6:00 PM IST\n- Saturday: 10:00 AM - 4:00 PM IST\n- Sunday: Closed",
+  });
+
+  const [emailLine, phoneLine, addressLine] = (contentMap.contact_us || "")
+    .split("\n")
+    .filter((line) => line.trim().startsWith("**"))
+    .map((line) => line.replace(/\\*\\*/g, "").replace(/^([^:]+):\\s*/, "$1: "));
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navigation />
@@ -33,8 +46,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Email Us</h3>
-                  <p className="text-sm text-muted-foreground">support@example.com</p>
-                  <p className="text-sm text-muted-foreground">wholesale@example.com</p>
+                  <p className="text-sm text-muted-foreground">{emailLine?.split(": ")[1] || "support@example.com"}</p>
                 </div>
               </CardContent>
             </Card>
@@ -46,8 +58,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Call Us</h3>
-                  <p className="text-sm text-muted-foreground">+91 1800-123-4567</p>
-                  <p className="text-sm text-muted-foreground">Mon-Fri, 9 AM - 6 PM IST</p>
+                  <p className="text-sm text-muted-foreground">{phoneLine?.split(": ")[1] || "+91 1800-123-4567"}</p>
                 </div>
               </CardContent>
             </Card>
@@ -59,8 +70,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Visit Us</h3>
-                  <p className="text-sm text-muted-foreground">123 Green Street</p>
-                  <p className="text-sm text-muted-foreground">Mumbai, Maharashtra 400001</p>
+                  <p className="text-sm text-muted-foreground">{addressLine?.split(": ")[1] || "123 Green Street, Mumbai, Maharashtra 400001"}</p>
                 </div>
               </CardContent>
             </Card>
@@ -123,19 +133,11 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <CardTitle className="text-xl mb-2">Business Hours</CardTitle>
-                      <div className="space-y-2 text-sm text-muted-foreground">
-                        <div className="flex justify-between">
-                          <span>Monday - Friday:</span>
-                          <span className="font-medium text-foreground">9:00 AM - 6:00 PM</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Saturday:</span>
-                          <span className="font-medium text-foreground">10:00 AM - 4:00 PM</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Sunday:</span>
-                          <span className="font-medium text-foreground">Closed</span>
-                        </div>
+                      <div className="prose prose-sm">
+                        <RichTextContent
+                          content={contentMap.contact_us || ""}
+                          className="text-sm text-muted-foreground"
+                        />
                       </div>
                     </div>
                   </div>
@@ -146,18 +148,18 @@ export default function ContactPage() {
                 <CardContent className="pt-6">
                   <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
                   <div className="space-y-3">
-                    <a href="/faq" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                    <Link href="/faq" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                       → Frequently Asked Questions
-                    </a>
-                    <a href="/shipping" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                    </Link>
+                    <Link href="/shipping" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                       → Shipping Information
-                    </a>
-                    <a href="/returns" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                    </Link>
+                    <Link href="/returns" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                       → Returns & Refunds
-                    </a>
-                    <a href="/sustainability" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                    </Link>
+                    <Link href="/sustainability" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                       → Our Sustainability Commitment
-                    </a>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -169,7 +171,7 @@ export default function ContactPage() {
                     For urgent inquiries, please call our customer support hotline during business hours.
                   </p>
                   <Button variant="secondary" className="w-full">
-                    Call Now: +91 1800-123-4567
+                    {phoneLine?.split(": ")[1] || "Call Now: +91 1800-123-4567"}
                   </Button>
                 </CardContent>
               </Card>
