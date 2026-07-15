@@ -8,12 +8,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import Script from "next/script";
 import { cartService } from "@/services/cartService";
 import { addressService } from "@/services/addressService";
 import { orderService } from "@/services/orderService";
 import { authService } from "@/services/authService";
 import type { Database } from "@/integrations/supabase/types";
-import Script from "next/script";
 
 type CartItem = Database["public"]["Tables"]["cart_items"]["Row"] & {
   products: Database["public"]["Tables"]["products"]["Row"] | null;
@@ -21,10 +22,20 @@ type CartItem = Database["public"]["Tables"]["cart_items"]["Row"] & {
 
 type Address = Database["public"]["Tables"]["addresses"]["Row"];
 
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
+interface RazorpayOrderResponse {
+  keyId: string;
+  razorpayOrderId: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  image: string;
+}
+
+interface RazorpayPaymentSuccess {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
 }
 
 export default function CheckoutPage() {
@@ -86,7 +97,7 @@ export default function CheckoutPage() {
       alert("Please fill all address fields");
       return;
     }
-    
+
     try {
       const session = await authService.getCurrentSession();
       if (!session) return;
@@ -115,6 +126,48 @@ export default function CheckoutPage() {
     }
   }
 
+  async function createRazorpayOrder(
+    localOrderId: string,
+    accessToken: string
+  ): Promise<RazorpayOrderResponse> {
+    const response = await fetch("/api/razorpay-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + accessToken,
+      },
+      body: JSON.stringify({ localOrderId }),
+    });
+
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      throw new Error(payload?.error || "Payment gateway is not configured yet.");
+    }
+
+    return payload as RazorpayOrderResponse;
+  }
+
+  async function markOrderPaymentFailed(
+    localOrderId: string,
+    accessToken: string,
+    paymentId?: string,
+    razorpayOrderId?: string
+  ) {
+    await fetch("/api/razorpay-order", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + accessToken,
+      },
+      body: JSON.stringify({
+        localOrderId,
+        paymentId,
+        razorpayOrderId,
+      }),
+    });
+  }
+
   async function handleRazorpayPayment() {
     if (!selectedAddressId) {
       alert("Please select or create a shipping address");
@@ -127,12 +180,18 @@ export default function CheckoutPage() {
     }
 
     setProcessing(true);
+
+    let accessToken = "";
+    let localOrderId: string | null = null;
+
     try {
       const session = await authService.getCurrentSession();
       if (!session) {
         router.push("/auth/login");
         return;
       }
+
+      accessToken = session.access_token;
 
       const subtotal = cartService.calculateTotal(cartItems);
       const shipping = subtotal > 2000 ? 0 : 99;
@@ -144,68 +203,110 @@ export default function CheckoutPage() {
         return;
       }
 
-      const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-      if (!razorpayKey) {
-        alert("Payment gateway not configured. Please add NEXT_PUBLIC_RAZORPAY_KEY_ID to your environment variables in Softgen Settings → Environment tab.");
-        setProcessing(false);
-        return;
-      }
+      const orderItems = cartItems.map((item) => ({
+        product_id: item.product_id,
+        product_name: item.products?.name || "Unknown Product",
+        product_price: item.products?.price || 0,
+        quantity: item.quantity,
+      }));
+
+      const order = await orderService.createOrder(
+        session.user.id,
+        selectedAddressId,
+        orderItems,
+        totalAmount
+      );
+
+      localOrderId = order.id;
+
+      const razorpayOrder = await createRazorpayOrder(order.id, accessToken);
+
+      let paymentCompleted = false;
+      let failureHandled = false;
 
       const options = {
-        key: razorpayKey,
-        amount: Math.round(totalAmount * 100),
-        currency: "INR",
-        name: "Recycled Goods Store",
-        description: "Order Payment",
-        image: "/favicon.ico",
+        key: razorpayOrder.keyId,
+        order_id: razorpayOrder.razorpayOrderId,
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        name: razorpayOrder.name,
+        description: razorpayOrder.description,
+        image: razorpayOrder.image,
         prefill: {
           name: selectedAddress.full_name,
           email: session.user.email || "",
           contact: selectedAddress.phone,
         },
         notes: {
+          local_order_id: order.id,
           address: `${selectedAddress.street_address}, ${selectedAddress.city}, ${selectedAddress.state} ${selectedAddress.postal_code}`,
         },
         theme: {
           color: "#0F4C3A",
         },
-        handler: async function (response: any) {
+        handler: async function (response: RazorpayPaymentSuccess) {
+          paymentCompleted = true;
+
           try {
-            const orderItems = cartItems.map((item) => ({
-              product_id: item.product_id,
-              product_name: item.products?.name || "Unknown Product",
-              product_price: item.products?.price || 0,
-              quantity: item.quantity,
-            }));
-
-            const order = await orderService.createOrder(
-              session.user.id,
-              selectedAddressId,
-              orderItems,
-              totalAmount
-            );
-
-            await orderService.updateOrderStatus(order.id, "processing");
             await cartService.clearCart(session.user.id);
-
-            router.push(`/orders/${order.id}?success=true&payment_id=${response.razorpay_payment_id}`);
           } catch (error) {
-            console.error("Error creating order:", error);
-            alert("Order creation failed. Please contact support.");
+            console.error("Error clearing cart after payment:", error);
+          } finally {
+            setProcessing(false);
+            router.push(
+              `/orders/${order.id}?payment=verifying&payment_id=${response.razorpay_payment_id}`
+            );
           }
         },
         modal: {
-          ondismiss: function () {
+          ondismiss: async function () {
+            if (!paymentCompleted && !failureHandled) {
+              failureHandled = true;
+              await markOrderPaymentFailed(
+                order.id,
+                accessToken,
+                undefined,
+                razorpayOrder.razorpayOrderId
+              );
+            }
             setProcessing(false);
           },
         },
       };
 
       const razorpay = new window.Razorpay(options);
+
+      razorpay.on("payment.failed", async function (response: { error?: { metadata?: { payment_id?: string; order_id?: string } } }) {
+        failureHandled = true;
+
+        await markOrderPaymentFailed(
+          order.id,
+          accessToken,
+          response.error?.metadata?.payment_id,
+          response.error?.metadata?.order_id || razorpayOrder.razorpayOrderId
+        );
+
+        setProcessing(false);
+        alert("Payment failed. Your order has been marked as payment failed.");
+      });
+
       razorpay.open();
     } catch (error) {
       console.error("Error initiating payment:", error);
-      alert("Payment initialization failed. Please try again.");
+
+      if (localOrderId && accessToken) {
+        await markOrderPaymentFailed(localOrderId, accessToken).catch(
+          (markError) => {
+            console.error("Error marking payment as failed:", markError);
+          }
+        );
+      }
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Payment initialization failed. Please try again."
+      );
       setProcessing(false);
     }
   }
@@ -236,7 +337,7 @@ export default function CheckoutPage() {
               <h2 className="font-serif text-2xl font-bold mb-4">Cart is Empty</h2>
               <p className="text-muted-foreground mb-6">Add items to your cart before checking out</p>
               <Button asChild>
-                <a href="/products">Browse Products</a>
+                <Link href="/products">Browse Products</Link>
               </Button>
             </CardContent>
           </Card>
