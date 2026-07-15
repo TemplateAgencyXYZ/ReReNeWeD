@@ -1,3 +1,4 @@
+ 
 export type Json =
   | string
   | number
@@ -397,7 +398,7 @@ export type Database = {
         }
         Insert: {
           content_key: string
-          content_value?: string
+          content_value: string
           id?: string
           updated_at?: string | null
           updated_by?: string | null
@@ -409,14 +410,29 @@ export type Database = {
           updated_at?: string | null
           updated_by?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "site_content_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      promote_user_to_admin: { Args: { target_email: string }; Returns: Json }
+      demote_user_from_admin: {
+        Args: { target_email: string }
+        Returns: boolean
+      }
+      promote_user_to_admin: {
+        Args: { target_email: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

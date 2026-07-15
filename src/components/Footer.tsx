@@ -38,21 +38,6 @@ export function Footer() {
                   All Products
                 </Link>
               </li>
-              <li>
-                <Link href="/categories" className="text-muted-foreground hover:text-primary transition-colors">
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link href="/new-arrivals" className="text-muted-foreground hover:text-primary transition-colors">
-                  New Arrivals
-                </Link>
-              </li>
-              <li>
-                <Link href="/featured" className="text-muted-foreground hover:text-primary transition-colors">
-                  Featured
-                </Link>
-              </li>
             </ul>
           </div>
 
