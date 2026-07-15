@@ -14,9 +14,10 @@ type Order = Awaited<ReturnType<typeof orderService.getOrderById>>;
 
 export default function OrderDetailsPage() {
   const router = useRouter();
-  const { id, success } = router.query;
+  const { id, success, razorpay_payment_id, razorpay_order_id, razorpay_signature } = router.query;
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -33,13 +34,51 @@ export default function OrderDetailsPage() {
       }
 
       const orderData = await orderService.getOrderById(id as string);
+      if (orderData.user_id && orderData.user_id !== session.user.id) {
+        router.push("/orders");
+        return;
+      }
       setOrder(orderData);
     } catch (error) {
       console.error("Error loading order:", error);
+      router.push("/orders");
     } finally {
       setLoading(false);
     }
   }
+
+  async function verifyPayment() {
+    if (!order || !razorpay_payment_id || !razorpay_order_id || !razorpay_signature) return;
+    setVerifying(true);
+    try {
+      const res = await fetch("/api/razorpay-verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          razorpay_payment_id,
+          razorpay_order_id,
+          razorpay_signature,
+          order_id: order.id,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Verification failed");
+
+      const updated = await orderService.getOrderById(order.id);
+      setOrder(updated);
+    } catch (error) {
+      console.error("Payment verification error:", error);
+      alert("Payment verification failed. Contact support if amount was deducted.");
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  useEffect(() => {
+    if (success === "true" && order && order.status === "pending") {
+      verifyPayment();
+    }
+  }, [success, order]);
 
   if (loading) {
     return (
@@ -129,11 +168,11 @@ export default function OrderDetailsPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Subtotal</span>
-                    <span className="font-medium">${order.total_amount.toFixed(2)}</span>
+                    <span className="font-medium">₹{order.total_amount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold pt-2 border-t">
                     <span>Total</span>
-                    <span>${order.total_amount.toFixed(2)}</span>
+                    <span>₹{order.total_amount.toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -162,8 +201,8 @@ export default function OrderDetailsPage() {
                       <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">${(item.product_price * item.quantity).toFixed(2)}</p>
-                      <p className="text-sm text-muted-foreground">${item.product_price.toFixed(2)} each</p>
+                      <p className="font-semibold">₹{(item.product_price * item.quantity).toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">₹{item.product_price.toFixed(2)} each</p>
                     </div>
                   </div>
                 ))}
