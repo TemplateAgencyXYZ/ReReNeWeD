@@ -9,65 +9,65 @@ export const ADMIN_CONTENT_SECTIONS: AdminContentSection[] = [
   {
     key: "hero_homepage",
     label: "Hero",
-    pageName: "Homepage",
+    pageName: "homepage",
     defaultValue:
       "Title: ReReNeWeD Sustainable Stationery for Conscious Living\nSubtitle: Discover recycled stationery designed to reduce waste, elevate everyday writing, and give useful materials a thoughtful second life.\nButton Text: Shop All Products",
   },
   {
     key: "our_story",
     label: "Our Story",
-    pageName: "Our Story",
+    pageName: "About / Our Story",
     defaultValue:
-      "ReReNeWeD began with a simple belief: useful materials deserve a second life.\n\nWe partner with local recyclers, schools, and offices to rescue paper, plastic, and metal that would otherwise reach landfills, then transform them into beautiful stationery for everyday use.\n\nEvery pencil, notebook, and pen we sell keeps waste out of the environment and helps our customers make small, meaningful choices for the planet.",
+      "Our Story\n\nReReNeWeD began with a simple idea: useful materials deserve a second life. We collect discarded paper, plastic, and fabric from offices, schools, and communities, then transform them into thoughtfully designed stationery.\n\nEvery pencil, notebook, and diary we make carries a smaller footprint than its virgin counterpart. We work with local recyclers and artisans to keep materials in circulation and reduce landfill waste.",
   },
   {
     key: "sustainability",
     label: "Sustainability",
     pageName: "Sustainability",
     defaultValue:
-      "Our Impact\n\nMaterials recovered: Tons of paper and plastic diverted from landfills each year.\nWater saved: Recycled paper production uses significantly less water than virgin paper.\nCarbon reduction: Local sourcing and minimal packaging keep our footprint small.\n\nHow We Source\n\nWe audit every supplier for ethical labor and environmental standards. Wherever possible we choose post-consumer waste over industrial scrap, so your purchase directly removes waste from communities.",
+      "Our Commitment to Sustainability\n\nAt ReReNeWeD, sustainability is not a marketing line. It is the way we source, make, package, and ship every product.\n\nWe use post-consumer recycled paper, reclaimed wood, and salvaged plastic. Our packaging is plastic-free and fully recyclable. We offset shipping emissions through verified climate partners and regularly audit our supply chain for ethical labor practices.",
   },
   {
     key: "faq",
     label: "FAQ",
     pageName: "FAQ",
     defaultValue:
-      "Q: Are all your products made from recycled materials?\nA: Most of our catalog uses recycled or upcycled content. Each product page shows the exact recycled percentage and origin.\n\nQ: Can I order in bulk for my office or school?\nA: Yes. Email us at hello@rerenewed.com for bulk pricing and customization.\n\nQ: How long does shipping take?\nA: Standard orders ship within 2 business days and arrive in 3-7 business days depending on your location.\n\nQ: What is your return policy?\nA: Unused items in original packaging can be returned within 30 days of delivery.",
+      "Frequently Asked Questions\n\nWhat does 'recycled' mean on your products?\nThe product is made from post-consumer or post-industrial material that has been collected, processed, and remanufactured.\n\nAre your products recyclable at end of life?\nMost paper and cardboard items are curbside recyclable. Check individual product pages for specific disposal guidance.\n\nHow long does shipping take?\nStandard orders ship within 2 business days and arrive in 5-7 business days across India.",
   },
   {
     key: "shipping_info",
     label: "Shipping Info",
-    pageName: "Shipping Info",
+    pageName: "Shipping",
     defaultValue:
-      "Shipping Rates\n\nStandard shipping is ₹99 for orders below ₹2,000 and free for orders above ₹2,000.\nDelivery Time\n\nOrders are processed within 1-2 business days. Most deliveries arrive within 3-7 business days for metro areas and 5-10 business days for remote locations.\nTracking\n\nYou will receive a tracking link by email and SMS once your order ships.",
+      "Shipping Information\n\nWe ship across India. Orders placed before 2 PM IST on business days are dispatched the same day. Standard delivery takes 5-7 business days. Express delivery is available for metro areas.\n\nOrders over ₹2,000 qualify for free standard shipping. For orders below that, a flat shipping fee of ₹99 applies.",
   },
   {
     key: "returns_policy",
     label: "Returns Policy",
-    pageName: "Returns Policy",
+    pageName: "Returns",
     defaultValue:
-      "30-Day Returns\n\nIf you are not satisfied with your purchase, you may return unused items in original packaging within 30 days of delivery for a full refund or exchange.\n\nHow to Return\n\nContact us through your order page or email hello@rerenewed.com to request a return label. Once we receive the item in original condition, your refund will be processed within 5-7 business days.\n\nExceptions\n\nPersonalized or clearance items cannot be returned unless defective.",
+      "Returns & Exchanges\n\nWe accept returns within 7 days of delivery if the product is unused and in original packaging. To initiate a return, contact us with your order ID.\n\nRefunds are processed within 5-7 business days after we receive the returned item. Digital or personalized items are not eligible for return.",
   },
   {
     key: "privacy_policy",
     label: "Privacy Policy",
-    pageName: "Privacy Policy",
+    pageName: "Privacy",
     defaultValue:
-      "Information We Collect\n\nWe collect information you provide when creating an account, placing an order, or contacting us. This includes your name, email, phone number, shipping address, and payment confirmation details.\n\nHow We Use Information\n\nWe use your information to process orders, communicate about shipments, and improve our services. We never sell your personal data.\n\nSecurity\n\nYour data is stored securely and access is restricted to authorized personnel only.",
+      "Privacy Policy\n\nWe collect only the information needed to fulfill your order and communicate with you about your purchase. This includes your name, shipping address, email, and phone number.\n\nWe do not sell or rent your personal information. Payment details are handled securely by Razorpay and are never stored on our servers.",
   },
   {
     key: "terms_of_service",
     label: "Terms of Service",
-    pageName: "Terms of Service",
+    pageName: "Terms",
     defaultValue:
-      "Use of Site\n\nBy using ReReNeWeD, you agree to provide accurate account information and use the site only for lawful purposes.\n\nOrders and Payment\n\nAll prices are listed in INR and include applicable taxes. Payment must be completed before items are shipped.\n\nLimitation of Liability\n\nReReNeWeD is not liable for indirect damages arising from the use of our products beyond the purchase price of the item.",
+      "Terms of Service\n\nBy using our website and placing an order, you agree to these terms. All prices are listed in Indian Rupees and include applicable taxes unless stated otherwise.\n\nWe reserve the right to update product information and pricing. We are not responsible for delays caused by shipping carriers or customs.",
   },
   {
     key: "contact_us",
     label: "Contact Us",
-    pageName: "Contact Us",
+    pageName: "Contact",
     defaultValue:
-      "Email: hello@rerenewed.com\nPhone: +91 98765 43210\nAddress: 12 Green Lane, Indiranagar, Bangalore, Karnataka 560038\nHours: Monday - Saturday, 10:00 AM - 6:00 PM IST",
+      "Email: hello@rerenewed.com\nPhone: +91 98765 43210\nAddress: 12 Gandhi Road, Bengaluru, Karnataka 560001\nHours: Monday to Saturday, 10 AM to 6 PM IST",
   },
   {
     key: "footer_tagline",
@@ -78,6 +78,6 @@ export const ADMIN_CONTENT_SECTIONS: AdminContentSection[] = [
   },
 ];
 
-export const ADMIN_CONTENT_DEFAULTS = Object.fromEntries(
+export const DEFAULT_CONTENT_VALUES = Object.fromEntries(
   ADMIN_CONTENT_SECTIONS.map((section) => [section.key, section.defaultValue])
 ) as Record<string, string>;
