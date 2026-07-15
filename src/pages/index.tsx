@@ -8,15 +8,30 @@ import { Package, Leaf, Truck, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import { productService } from "@/services/productService";
 import type { Database } from "@/integrations/supabase/types";
+import { useSiteContent, parseKeyValueContent } from "@/hooks/use-site-content";
 
 type Product = Database["public"]["Tables"]["products"]["Row"] & {
   categories: { id: string; name: string; slug: string } | null;
 };
 
+const HERO_DEFAULT =
+  "Title: Quality Recycled Goods for Conscious Living\nSubtitle: Every purchase supports sustainable living. Discover unique, renewed products that give materials a second life.\nButton Text: Shop All Products";
+
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { contentMap } = useSiteContent(["hero_homepage"], {
+    hero_homepage: HERO_DEFAULT,
+  });
+
+  const hero = parseKeyValueContent(contentMap.hero_homepage || HERO_DEFAULT);
+  const heroTitle = hero.title || "Quality Recycled Goods for Conscious Living";
+  const heroSubtitle =
+    hero.subtitle ||
+    "Every purchase supports sustainable living. Discover unique, renewed products that give materials a second life.";
+  const heroButton = hero["button text"] || "Shop All Products";
 
   useEffect(() => {
     loadProducts();
@@ -50,14 +65,14 @@ export default function HomePage() {
                 Sustainable Shopping
               </Badge>
               <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight">
-                Quality Recycled Goods for Conscious Living
+                {heroTitle}
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Every purchase supports sustainable living. Discover unique, renewed products that give materials a second life.
+                {heroSubtitle}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Button asChild size="lg" className="text-base">
-                  <Link href="/products">Shop All Products</Link>
+                  <Link href="/products">{heroButton}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-base">
                   <Link href="/story">Our Story</Link>
@@ -75,9 +90,9 @@ export default function HomePage() {
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary">
                   <Leaf className="h-7 w-7" />
                 </div>
-                <h3 className="font-semibold text-lg">100% Recycled</h3>
+                <h3 className="font-semibold text-lg">Material Transparency</h3>
                 <p className="text-sm text-muted-foreground">
-                  All products made from reclaimed and recycled materials
+                  Product cards clearly label recycled items so you can shop by material with confidence
                 </p>
               </div>
 
