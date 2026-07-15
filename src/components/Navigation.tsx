@@ -98,9 +98,6 @@ export function Navigation() {
             <Link href="/products" className="text-sm font-medium transition-colors hover:text-primary">
               Shop
             </Link>
-            <Link href="/categories" className="text-sm font-medium transition-colors hover:text-primary">
-              Categories
-            </Link>
             <Link href="/about" className="text-sm font-medium transition-colors hover:text-primary">
               About
             </Link>

@@ -8,24 +8,42 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { productService } from "@/services/productService";
+import { categoryService } from "@/services/categoryService";
 import type { Database } from "@/integrations/supabase/types";
 
 type Product = Database["public"]["Tables"]["products"]["Row"] & {
   categories: { id: string; name: string; slug: string } | null;
 };
 
+type Category = Database["public"]["Tables"]["categories"]["Row"];
+
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    loadCategories();
     loadProducts();
   }, []);
 
-  async function loadProducts() {
+  async function loadCategories() {
     try {
-      const data = await productService.getAllProducts();
+      const data = await categoryService.getAllCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    }
+  }
+
+  async function loadProducts(categoryId?: string) {
+    setLoading(true);
+    try {
+      const data = categoryId && categoryId !== "all"
+        ? await productService.getProductsByCategory(categoryId)
+        : await productService.getAllProducts();
       setProducts(data);
     } catch (error) {
       console.error("Error loading products:", error);
@@ -34,9 +52,16 @@ export default function ProductsPage() {
     }
   }
 
+  async function handleCategoryChange(categoryId: string) {
+    setActiveCategory(categoryId);
+    setSearchQuery("");
+    await loadProducts(categoryId);
+  }
+
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (!searchQuery.trim()) {
+      setActiveCategory("all");
       loadProducts();
       return;
     }
@@ -45,6 +70,7 @@ export default function ProductsPage() {
     try {
       const data = await productService.searchProducts(searchQuery);
       setProducts(data);
+      setActiveCategory("all");
     } catch (error) {
       console.error("Error searching products:", error);
     } finally {
@@ -85,6 +111,26 @@ export default function ProductsPage() {
 
         <section className="py-12">
           <div className="container">
+            <div className="flex flex-wrap gap-2 mb-8 justify-center">
+              <Button
+                variant={activeCategory === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleCategoryChange("all")}
+              >
+                All
+              </Button>
+              {categories.map((category) => (
+                <Button
+                  key={category.id}
+                  variant={activeCategory === category.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleCategoryChange(category.id)}
+                >
+                  {category.name}
+                </Button>
+              ))}
+            </div>
+
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {[...Array(8)].map((_, i) => (
@@ -134,7 +180,7 @@ export default function ProductsPage() {
                           </p>
                           <div className="flex items-center justify-between pt-2">
                             <span className="text-2xl font-bold text-primary">
-                              ${product.price.toFixed(2)}
+                              ₹{product.price.toFixed(2)}
                             </span>
                             <Button size="sm" disabled={product.stock === 0}>
                               {product.stock === 0 ? "Out of Stock" : "View"}

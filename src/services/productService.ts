@@ -186,4 +186,21 @@ export const productService = {
 
     return publicUrl;
   },
+
+  getPlaceholderImage(): string {
+    return "/Human_Value_AI_6_9s_Clip.png";
+  },
+
+  async assignPlaceholderImage(productId: string): Promise<Product> {
+    const placeholder = this.getPlaceholderImage();
+    const { data, error } = await supabase
+      .from("products")
+      .update({ images: [placeholder], updated_at: new Date().toISOString() })
+      .eq("id", productId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
 };
